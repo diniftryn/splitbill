@@ -1,0 +1,119 @@
+export const expenses = [
+  {
+    id: 0,
+    createdDate: "20/12/2023",
+    description: "Plasters",
+    paid_by: "Gwan Hee",
+    amount_paid: 20,
+    owed_by: "Dini",
+    amount_owed: 10
+  },
+  {
+    id: 1,
+    createdDate: "22/12/2023",
+    description: "Energy drink",
+    paid_by: "Gwan Hee",
+    amount_paid: 25,
+    owed_by: "Dini",
+    amount_owed: 15
+  },
+  {
+    id: 2,
+    createdDate: "24/12/2023",
+    description: "Eyedrops",
+    paid_by: "Dini",
+    amount_paid: 50,
+    owed_by: "Hajeong",
+    amount_owed: 25
+  },
+  {
+    id: 3,
+    createdDate: "20/12/2023",
+    description: "Coffee",
+    paid_by: "Jin Seok",
+    amount_paid: 20,
+    owed_by: "Dini",
+    amount_owed: 10
+  },
+  {
+    id: 4,
+    createdDate: "22/12/2023",
+    description: "Cake",
+    paid_by: "Hye Seon",
+    amount_paid: 25,
+    owed_by: "Dini",
+    amount_owed: 15
+  },
+  {
+    id: 5,
+    createdDate: "24/12/2023",
+    description: "Eyedrops",
+    paid_by: "Dini",
+    amount_paid: 50,
+    owed_by: "Hye Seon",
+    amount_owed: 25
+  }
+];
+
+export const friends = [
+  {
+    id: 0,
+    name: "Gwan Hee",
+    status: "owes you",
+    amount: 25,
+    imageUrl: ""
+  },
+  {
+    id: 1,
+    name: "Hye Seon",
+    status: "you owe",
+    amount: 5,
+    imageUrl: ""
+  },
+  {
+    id: 2,
+    name: "Si Eun",
+    status: "you owe",
+    amount: 10,
+    imageUrl: ""
+  },
+  {
+    id: 3,
+    name: "Min Woo",
+    status: "you owe",
+    amount: 5,
+    imageUrl: ""
+  },
+  {
+    id: 4,
+    name: "Jin Seok",
+    status: "settled",
+    amount: 0,
+    imageUrl: ""
+  },
+  {
+    id: 5,
+    name: "Hajeong",
+    status: "settled",
+    amount: 0,
+    imageUrl: ""
+  }
+];
+
+export const activities = [
+  {
+    lineOne: "You added Coffee",
+    lineTwo: "You get back $5.00",
+    lineThree: "14 Jan 2024 at 9:34pm"
+  },
+  {
+    lineOne: "Hye Seon added Cake",
+    lineTwo: "You owe $5.00",
+    lineThree: "8 Jan 2024 at 7:40pm"
+  },
+  {
+    lineOne: "Gwan Hee added Plasters",
+    lineTwo: "You owe $5.00",
+    lineThree: "8 Jan 2024 at 7:40pm"
+  }
+];
