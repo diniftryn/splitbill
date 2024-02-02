@@ -1,6 +1,7 @@
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
 import { Stack } from "expo-router";
+import { Button } from "tamagui";
 
 export default function AddExpenseModal() {
   const [form, setForm] = useState({
@@ -18,14 +19,23 @@ export default function AddExpenseModal() {
       <Stack.Screen options={{ title: "add an expense" }} />
 
       <View style={styles.row}>
-        <Text>Description</Text>
+        <Text style={styles.text}>description</Text>
         <TextInput value={form.description} onChangeText={text => setForm({ ...form, description: text })} placeholder="enter a description" style={styles.input} keyboardType="default" />
       </View>
 
       <View style={styles.row}>
-        <Text>Amount</Text>
+        <Text style={styles.text}>amount</Text>
         <TextInput value={form.amount_paid} onChangeText={text => setForm({ ...form, amount_paid: text })} placeholder="0.00" style={styles.input} keyboardType="numeric" />
       </View>
+
+      <Button
+        style={{ marginTop: 20 }}
+        onPress={() => {
+          Alert.alert("expense added successfully");
+        }}
+      >
+        + add
+      </Button>
     </View>
   );
 }
@@ -33,13 +43,20 @@ export default function AddExpenseModal() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    padding: 10,
-    borderRadius: 5,
-    gap: 5
+    padding: 20,
+    borderRadius: 10,
+    gap: 5,
+    margin: 20
   },
   row: {
     flexDirection: "row",
-    gap: 10
+    gap: 20,
+    alignItems: "center",
+    padding: 5
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "500"
   },
   input: {
     borderWidth: 1,

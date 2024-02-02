@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
 
@@ -12,13 +12,38 @@ export default function ExpensesListItemDetails() {
   });
 
   return (
-    <View style={{ gap: 10 }}>
-      <Text style={{ color: "white" }}>{expense?.createdDate}</Text>
-      <Text style={{ color: "white" }}>{expense?.description}</Text>
-      <Text style={{ color: "white" }}>Paid by: {expense?.paid_by}</Text>
-      <Text style={{ color: "white" }}>Amount: {expense?.amount_paid}</Text>
-      <Text style={{ color: "white" }}>Owed by: {expense?.owed_by}</Text>
-      <Text style={{ color: "white" }}>Amount: {expense?.amount_owed}</Text>
+    <View style={styles.detailsContainer}>
+      <View style={{ gap: 5, paddingBottom: 20 }}>
+        <Text style={styles.detailsHeader}>{expense?.description}</Text>
+        <Text style={styles.detailsSubheader}>{expense?.createdDate}</Text>
+      </View>
+
+      <Text style={styles.detailsText}>Paid by: {expense?.paid_by}</Text>
+      <Text style={styles.detailsText}>Amount: ${expense?.amount_paid}</Text>
+      <Text style={styles.detailsText}>Owed by: {expense?.owed_by}</Text>
+      <Text style={styles.detailsText}>Amount: ${expense?.amount_owed}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  detailsContainer: {
+    backgroundColor: "#fff",
+    margin: 70,
+    borderRadius: 10,
+    padding: 40,
+    paddingVertical: 50,
+    gap: 5
+  },
+  detailsHeader: {
+    fontSize: 20,
+    fontWeight: "500"
+  },
+  detailsSubheader: {
+    fontSize: 14,
+    fontWeight: "500"
+  },
+  detailsText: {
+    fontSize: 16
+  }
+});

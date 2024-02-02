@@ -61,42 +61,42 @@ export const friends = [
     name: "Gwan Hee",
     status: "owes you",
     amount: 25,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds1.jpeg")
   },
   {
     id: 1,
     name: "Hye Seon",
     status: "you owe",
     amount: 5,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds2.jpeg")
   },
   {
     id: 2,
     name: "Si Eun",
     status: "you owe",
     amount: 10,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds3.jpeg")
   },
   {
     id: 3,
     name: "Min Woo",
     status: "you owe",
     amount: 5,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds4.jpeg")
   },
   {
     id: 4,
     name: "Jin Seok",
     status: "settled",
     amount: 0,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds5.jpeg")
   },
   {
     id: 5,
     name: "Hajeong",
     status: "settled",
     amount: 0,
-    imageUrl: ""
+    imageUrl: require("../assets/images/clouds6.jpeg")
   }
 ];
 

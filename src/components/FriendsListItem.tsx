@@ -1,11 +1,18 @@
-import { StyleSheet, Text, Pressable, View } from "react-native";
+import { StyleSheet, Text, Pressable, View, Image } from "react-native";
 import { Link } from "expo-router";
+import { Avatar } from "tamagui";
 
 export default function expenseListItem({ item }: any) {
   return (
     <Link href={`/(tabs)/friends/${item.name}`} asChild>
       <Pressable style={styles.expenseContainer}>
-        <Text style={styles.expenseName}>{item.name}</Text>
+        <View style={styles.expenseTitle}>
+          <Avatar circular size="$4">
+            <Avatar.Image src={item.imageUrl} />
+            <Avatar.Fallback bc="grey" />
+          </Avatar>
+          <Text style={styles.expenseName}>{item.name}</Text>
+        </View>
 
         <View style={styles.expenseSubtitle}>
           <Text style={styles.subValue}>{item.status}</Text>
@@ -23,7 +30,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
 
     backgroundColor: "#fff",
-    padding: 10,
+    padding: 6,
+    paddingHorizontal: 20,
     borderRadius: 10,
     marginHorizontal: 2,
 
@@ -38,8 +46,9 @@ const styles = StyleSheet.create({
 
     elevation: 2
   },
+  expenseTitle: { flexDirection: "row", alignItems: "center", gap: 20 },
   expenseName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "500"
   },
   expenseSubtitle: {
