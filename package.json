@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "3.1.1",
+    "@react-native-community/blur": "^4.4.0",
     "@react-navigation/native": "^6.0.2",
+    "@shopify/react-native-skia": "^0.1.237",
     "@tamagui/config": "^1.88.17",
     "@tamagui/metro-plugin": "^1.88.17",
     "babel-preset-expo": "^10.0.1",
@@ -31,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-helmet-async": "~2.0.4",
     "react-native": "0.73.2",
+    "react-native-reanimated": "^3.6.2",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-web": "^0.19.9",

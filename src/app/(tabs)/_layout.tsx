@@ -6,7 +6,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "yellow",
+        tabBarActiveTintColor: "rgb(0, 122, 255)",
         tabBarShowLabel: false
       }}
     >
@@ -15,14 +15,14 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           // title: "friends",
-          tabBarIcon: ({ color }) => <Text>friends</Text>
+          tabBarIcon: ({ color }) => <Text style={{ color }}>friends</Text>
         }}
       />
       <Tabs.Screen
         name="activity"
         options={{
           // title: "activity",
-          tabBarIcon: ({ color }) => <Text>activity</Text>
+          tabBarIcon: ({ color }) => <Text style={{ color }}>activity</Text>
         }}
       />
     </Tabs>

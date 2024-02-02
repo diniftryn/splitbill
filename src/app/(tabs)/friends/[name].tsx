@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 
 import ExpensesList from "../../../components/ExpensesList";
@@ -8,15 +8,28 @@ export default function FriendsExpensesScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: name as string }} />
+      <ImageBackground
+        source={require("../../../../assets/images/2.png")}
+        // source={require("../../../../assets/images/clouds-splash.jpeg")}
+        style={styles.backgroundImage}
+      >
+        <Stack.Screen options={{ title: name as string }} />
 
-      <ExpensesList friendName={name} />
+        <View style={{ padding: 10 }}>
+          <ExpensesList friendName={name} />
+        </View>
+      </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10
+    flex: 1
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover" // or 'contain' for different scaling options
+    // justifyContent: "center" // Adjust as needed
   }
 });

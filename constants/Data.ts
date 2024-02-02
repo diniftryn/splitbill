@@ -61,7 +61,7 @@ export const friends = [
     name: "Gwan Hee",
     status: "owes you",
     amount: 25,
-    imageUrl: require("../assets/images/clouds1.jpeg")
+    imageUrl: require("../assets/images/clouds8.jpeg")
   },
   {
     id: 1,
@@ -75,7 +75,7 @@ export const friends = [
     name: "Si Eun",
     status: "you owe",
     amount: 10,
-    imageUrl: require("../assets/images/clouds3.jpeg")
+    imageUrl: require("../assets/images/clouds9.jpeg")
   },
   {
     id: 3,

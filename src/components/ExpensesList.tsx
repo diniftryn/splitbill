@@ -10,5 +10,5 @@ export default function ExpensesList({ friendName }: any) {
   });
 
   // console.log(data);
-  return <FlatList data={data ? data : []} ListHeaderComponent={() => <Text>ListHeader</Text>} showsVerticalScrollIndicator={false} renderItem={({ item }) => <ExpensesListItem expense={item} />} />;
+  return <FlatList data={data ? data : []} showsVerticalScrollIndicator={false} renderItem={({ item }) => <ExpensesListItem expense={item} />} />;
 }
