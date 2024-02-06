@@ -2,7 +2,8 @@ import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyb
 import React, { useState } from "react";
 import { Foundation } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
+import { EvilIcons } from "@expo/vector-icons";
 
 export default function AddExpenseModal() {
   const [expenseName, setExpenseName] = useState("");
@@ -57,6 +58,11 @@ export default function AddExpenseModal() {
               <TouchableOpacity onPress={handleAddExpense} className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
                 <Ionicons name="checkmark" size={30} color="black" />
               </TouchableOpacity>
+            ),
+            headerLeft: () => (
+              <Link href="../">
+                <EvilIcons name="close" size={24} color="black" />
+              </Link>
             )
           }}
         />
