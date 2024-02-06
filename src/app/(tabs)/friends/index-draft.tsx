@@ -1,8 +1,8 @@
-import { View, Text, ImageBackground, StyleSheet, FlatList } from "react-native";
+import { View, Text, ImageBackground, StyleSheet, FlatList, Pressable } from "react-native";
 import React from "react";
 import { friends } from "../../../../constants/Data";
 import FriendsListItem from "../../../components/FriendsListItem";
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
 // import { GlassView, GlassButton } from "@metafic-co/react-native-glassmorphism";
 
 export default function IndexScreen() {
@@ -21,15 +21,15 @@ export default function IndexScreen() {
             headerTintColor: "rgb(0, 122, 255)", // Change header text color
             headerStyle: {
               backgroundColor: "rgba(255, 255, 255, 0.3)" // Use an RGBA color with alpha for translucency
-            }
+            },
             // headerSearchBarOptions: {}
-            // headerRight: () => (
-            //   <Link href="/add-expense" asChild>
-            //     <Pressable>
-            //       <Text>Add Expense</Text>
-            //     </Pressable>
-            //   </Link>
-            // )
+            headerRight: () => (
+              <Link href="/add-expense" asChild>
+                <Pressable>
+                  <Text>Add Expense</Text>
+                </Pressable>
+              </Link>
+            )
           }}
         />
         <FlatList data={friends} contentContainerStyle={{ gap: 5 }} style={{ padding: 10 }} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
