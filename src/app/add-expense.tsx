@@ -50,7 +50,7 @@ export default function AddExpenseModal() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="items-center gap-y-5 flex-1 bg-rose-50">
+      <View className="items-center gap-y-5 flex-1 bg-pink-200">
         <Stack.Screen
           options={{
             title: "new expense",
@@ -108,7 +108,7 @@ export default function AddExpenseModal() {
           </View>
         </View>
 
-        <TouchableOpacity className="py-1 px-5 border bg-[#C8AFE9] shadow-lg" onPress={Keyboard.dismiss}>
+        <TouchableOpacity className="py-1 px-5 border bg-purple-300 shadow-lg" onPress={Keyboard.dismiss}>
           <Text>paid by you and split equally</Text>
         </TouchableOpacity>
 

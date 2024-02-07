@@ -1,17 +1,24 @@
 import { View, StyleSheet, FlatList, ImageBackground } from "react-native";
 import { activities } from "../../../constants/Data";
 import ActivityListItem from "../../components/ActivityListItem";
+import { Stack } from "expo-router";
 
 export default function ActivityScreen() {
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../../../assets/images/1.png")}
-        // source={require("../../../assets/images/clouds-splash.jpeg")}
-        style={styles.backgroundImage}
-      >
-        <FlatList data={activities} contentContainerStyle={{ gap: 5 }} style={{ padding: 10 }} keyExtractor={(item, index) => item.lineOne + index} renderItem={({ item }) => <ActivityListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
-      </ImageBackground>
+    <View className="flex-1 bg-[#EDF76A]">
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitle: "activity",
+          headerTintColor: "black",
+          headerStyle: {
+            backgroundColor: "rgb(216 180 254)"
+          }
+          // headerSearchBarOptions: {}
+        }}
+      />
+
+      <FlatList data={activities} contentContainerStyle={{ gap: 5 }} style={{ padding: 10 }} keyExtractor={(item, index) => item.lineOne + index} renderItem={({ item }) => <ActivityListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
     </View>
   );
 }

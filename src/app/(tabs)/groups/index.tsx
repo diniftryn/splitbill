@@ -16,7 +16,7 @@ export default function IndexScreen() {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: "friends",
+          headerTitle: "groups",
           headerTintColor: "black",
           headerStyle: {
             backgroundColor: "#EDF76A"
@@ -25,7 +25,7 @@ export default function IndexScreen() {
           headerRight: () => (
             <Link href="/add-expense" asChild>
               <Pressable>
-                <AntDesign name="adduser" size={24} color="black" />
+                <AntDesign name="addusergroup" size={24} color="black" />
               </Pressable>
             </Link>
           )
