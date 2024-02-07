@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
 
@@ -12,38 +12,18 @@ export default function ExpensesListItemDetails() {
   });
 
   return (
-    <View style={styles.detailsContainer}>
-      <View style={{ gap: 5, paddingBottom: 20 }}>
-        <Text style={styles.detailsHeader}>{expense?.description}</Text>
-        <Text style={styles.detailsSubheader}>{expense?.createdDate}</Text>
+    <View className="bg-white w-[70vw] px-6 py-5 rounded-xl border">
+      <View className="mb-10 w-full border-b-[1px] pb-2">
+        <Text className="text-xl font-semibold">{expense?.description}</Text>
+        <Text className="text-lg">07 February 2024</Text>
       </View>
 
-      <Text style={styles.detailsText}>Paid by: {expense?.paid_by}</Text>
-      <Text style={styles.detailsText}>Amount: ${expense?.amount_paid}</Text>
-      <Text style={styles.detailsText}>Owed by: {expense?.owed_by}</Text>
-      <Text style={styles.detailsText}>Amount: ${expense?.amount_owed}</Text>
+      <View className="gap-y-1">
+        <Text className="text-base">Paid by: {expense?.paid_by}</Text>
+        <Text className="text-base">Amount: ${expense?.amount_paid}</Text>
+        <Text className="text-base">Owed by: {expense?.owed_by}</Text>
+        <Text className="text-base">Amount: ${expense?.amount_owed}</Text>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  detailsContainer: {
-    backgroundColor: "#fff",
-    margin: 70,
-    borderRadius: 10,
-    padding: 40,
-    paddingVertical: 50,
-    gap: 5
-  },
-  detailsHeader: {
-    fontSize: 20,
-    fontWeight: "500"
-  },
-  detailsSubheader: {
-    fontSize: 14,
-    fontWeight: "500"
-  },
-  detailsText: {
-    fontSize: 16
-  }
-});

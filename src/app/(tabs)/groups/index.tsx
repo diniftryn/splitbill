@@ -26,9 +26,12 @@ export default function IndexScreen() {
         }}
       />
       <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
-      <TouchableOpacity className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">
-        <Ionicons name="add" size={35} color="black" />
-      </TouchableOpacity>
+
+      <Link href="/add-expense" asChild>
+        <Pressable className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">
+          <Ionicons name="add" size={35} color="black" />
+        </Pressable>
+      </Link>
       <View className="border border-black rounded-full bg-black absolute bottom-[0px] p-2 right-[40vw] z-40">
         <Ionicons name="add" size={35} color="black" />
       </View>

@@ -1,20 +1,20 @@
-import { StyleSheet, Text, Pressable, View, Image } from "react-native";
+import { StyleSheet, Text, Pressable, View } from "react-native";
 import { Link } from "expo-router";
 import { Avatar } from "tamagui";
 
-export default function expenseListItem({ item }: any) {
+export default function friendListItem({ item }: any) {
   return (
     <Link href={`/(tabs)/friends/${item.name}`} asChild>
-      <Pressable style={styles.expenseContainer}>
-        <View style={styles.expenseTitle}>
+      <Pressable style={styles.friendContainer}>
+        <View style={styles.friendTitle}>
           <Avatar circular size="$4">
             <Avatar.Image src={item.imageUrl} />
             <Avatar.Fallback bc="grey" />
           </Avatar>
-          <Text style={styles.expenseName}>{item.name}</Text>
+          <Text style={styles.friendName}>{item.name}</Text>
         </View>
 
-        <View style={styles.expenseSubtitle}>
+        <View style={styles.friendSubtitle}>
           <Text style={styles.subValue}>{item.status}</Text>
           <Text style={styles.subValue}>${item.amount}</Text>
         </View>
@@ -24,15 +24,15 @@ export default function expenseListItem({ item }: any) {
 }
 
 const styles = StyleSheet.create({
-  expenseContainer: {
+  friendContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
 
     backgroundColor: "#fff",
-    padding: 6,
+    padding: 8,
     paddingHorizontal: 20,
-    marginHorizontal: 2,
+    marginHorizontal: 0,
 
     // shadow
     shadowColor: "#000",
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
 
     elevation: 2
   },
-  expenseTitle: { flexDirection: "row", alignItems: "center", gap: 20 },
-  expenseName: {
-    fontSize: 16,
+  friendTitle: { flexDirection: "row", alignItems: "center", gap: 20 },
+  friendName: {
+    fontSize: 17,
     fontWeight: "500"
   },
-  expenseSubtitle: {
+  friendSubtitle: {
     alignItems: "flex-end",
     color: "dimgray"
   },

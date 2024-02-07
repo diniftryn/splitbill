@@ -7,7 +7,7 @@ export default function ActivityListItem({ item }: any) {
 
       <View>
         <Text style={styles.subValue}>{item.lineTwo}</Text>
-        <Text style={styles.subValue}>{item.lineThree}</Text>
+        <Text style={(styles.subValue, { color: "gray", fontSize: 12 })}>{item.lineThree}</Text>
       </View>
     </View>
   );
@@ -17,8 +17,9 @@ const styles = StyleSheet.create({
   expenseContainer: {
     backgroundColor: "#fff",
     padding: 10,
-    borderRadius: 10,
+    // borderRadius: 10,
     marginHorizontal: 2,
+    gap: 1,
 
     // shadow
     shadowColor: "#000",
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   expenseName: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "500"
   },
   expenseSubtitle: {

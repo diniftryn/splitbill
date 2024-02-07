@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Pressable } from "react-native";
 import React, { useState } from "react";
 import { Foundation } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -67,14 +67,7 @@ export default function AddExpenseModal() {
           }}
         />
 
-        {/* <View className="bg-[#EDF76A] p-5"></View>
-        <View className="bg-[#C8AFE9] p-5"></View>
-        <View className="bg-[#F7CDE4] p-5"></View>
-        <View className="bg-[#FDF3FD] p-5"></View>
-        <View className="bg-[#F6D238] p-5"></View>
-        <Text className="gray text-gray-500 p-5"></Text> */}
-
-        <View className="border-b-[1px] border-gray-500 w-full p-2 flex-row">
+        <View className="border-b-[1px] border-gray-500 w-full p-2 flex-row items-center">
           <Text className="text-gray-500">split between you and: </Text>
           <TouchableOpacity className="w-full">
             <TextInput placeholder="type friend's name" placeholderTextColor="gray" onChangeText={text => setFriendToSplitWith(text)} />
