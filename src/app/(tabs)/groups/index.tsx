@@ -7,12 +7,6 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 export default function IndexScreen() {
   return (
     <View className="flex-1 bg-purple-300">
-      {/* <View className="bg-[#EDF76A] p-5"></View>
-        <View className="bg-[#C8AFE9] p-5"></View>
-        <View className="bg-[#F7CDE4] p-5"></View>
-        <View className="bg-[#FDF3FD] p-5"></View>
-        <View className="bg-[#F6D238] p-5"></View>
-        <Text className="gray text-gray-500 p-5"></Text> */}
       <Stack.Screen
         options={{
           headerShown: true,
