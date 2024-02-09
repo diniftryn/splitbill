@@ -1,5 +1,5 @@
 import { View, Text, ImageBackground, StyleSheet, FlatList, Pressable, TouchableOpacity, ScrollView } from "react-native";
-import { friends } from "@/constants/Data";
+import { groups } from "@/constants/Data";
 import FriendsListItem from "@/src/components/FriendsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
@@ -25,7 +25,7 @@ export default function IndexScreen() {
           )
         }}
       />
-      <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+      <FlatList data={groups} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
 
       <Link href="/add-expense/" asChild>
         <Pressable className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">

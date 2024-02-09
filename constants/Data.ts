@@ -102,6 +102,16 @@ export const friends = [
 
 export const activities = [
   {
+    lineOne: "You and Si Eun are settled-up",
+    lineTwo: "Si Eun paid $5.00",
+    lineThree: "20 Jan 2024 at 5:08pm"
+  },
+  {
+    lineOne: "You and Hye Seon are settled-up",
+    lineTwo: "You paid $5.00",
+    lineThree: "14 Jan 2024 at 9:44pm"
+  },
+  {
     lineOne: "You added Coffee",
     lineTwo: "You get back $5.00",
     lineThree: "14 Jan 2024 at 9:34pm"
@@ -115,5 +125,29 @@ export const activities = [
     lineOne: "Gwan Hee added Plasters",
     lineTwo: "You owe $5.00",
     lineThree: "8 Jan 2024 at 7:40pm"
+  }
+];
+
+export const groups = [
+  {
+    id: 0,
+    name: "Singles Inferno 1",
+    status: "Ye-won owes you",
+    amount: 25,
+    imageUrl: require("../assets/images/clouds11.jpeg")
+  },
+  {
+    id: 1,
+    name: "Singles Inferno 2",
+    status: "you owe Nadine",
+    amount: 5,
+    imageUrl: require("../assets/images/clouds12.jpeg")
+  },
+  {
+    id: 2,
+    name: "Singles Inferno 3",
+    status: "settled",
+    amount: 0,
+    imageUrl: require("../assets/images/clouds10.jpeg")
   }
 ];
