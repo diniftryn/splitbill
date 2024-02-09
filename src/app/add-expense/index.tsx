@@ -50,19 +50,23 @@ export default function AddExpenseModal() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="items-center gap-y-5 flex-1 bg-pink-200">
+      <View className="items-center gap-y-10 flex-1 bg-pink-200">
         <Stack.Screen
           options={{
             title: "new expense",
-            headerRight: () => (
-              <TouchableOpacity onPress={handleAddExpense} className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
-                <Ionicons name="checkmark" size={30} color="black" />
-              </TouchableOpacity>
-            ),
+            // headerStyle: { backgroundColor: "#EDF76A" },
+            // headerStyle: {
+            //   backgroundColor: "rgb(216 180 254)"
+            // },
             headerLeft: () => (
               <Link href="../">
                 <EvilIcons name="close" size={24} color="black" />
               </Link>
+            ),
+            headerRight: () => (
+              <TouchableOpacity onPress={handleAddExpense} className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
+                <Ionicons name="checkmark" size={30} color="black" />
+              </TouchableOpacity>
             )
           }}
         />
@@ -101,9 +105,11 @@ export default function AddExpenseModal() {
           </View>
         </View>
 
-        <TouchableOpacity className="py-1 px-5 border bg-purple-300 shadow-lg" onPress={Keyboard.dismiss}>
-          <Text>paid by you and split equally</Text>
-        </TouchableOpacity>
+        <Link href="/add-expense/split-details" asChild>
+          <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg">
+            <Text>paid by you and split equally</Text>
+          </TouchableOpacity>
+        </Link>
 
         <TouchableOpacity className="items-center p-5 border border-dashed border-black bg-[#FDF3FD]" onPress={Keyboard.dismiss}>
           <Foundation name="camera" size={40} color="black" />

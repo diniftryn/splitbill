@@ -17,7 +17,7 @@ export default function IndexScreen() {
           },
           // headerSearchBarOptions: {}
           headerRight: () => (
-            <Link href="/add-expense" asChild>
+            <Link href="/add-groups" asChild>
               <Pressable>
                 <AntDesign name="addusergroup" size={24} color="black" />
               </Pressable>
@@ -27,7 +27,7 @@ export default function IndexScreen() {
       />
       <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
 
-      <Link href="/add-expense" asChild>
+      <Link href="/add-expense/" asChild>
         <Pressable className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">
           <Ionicons name="add" size={35} color="black" />
         </Pressable>

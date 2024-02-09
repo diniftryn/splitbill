@@ -50,7 +50,9 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="add-expense" options={{ presentation: "modal" }} />
+          <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
+          <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
         </Stack>
       </ThemeProvider>
     </TamaguiProvider>
