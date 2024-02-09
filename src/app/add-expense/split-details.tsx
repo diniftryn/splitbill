@@ -8,15 +8,10 @@ export default function SplitDetailsScreen() {
       <View className="flex-1 items-center bg-rose-50 gap-y-10 pt-10">
         <Stack.Screen
           options={{
-            // headerTintColor: "#EDF76A",
+            headerTintColor: "black",
             title: "",
             headerBackTitle: "",
             headerStyle: { backgroundColor: "#EDF76A" }
-            // headerRight: () => (
-            //   <TouchableOpacity onPress={handleAddExpense} className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
-            //     <Ionicons name="checkmark" size={30} color="black" />
-            //   </TouchableOpacity>
-            // )
           }}
         />
 
