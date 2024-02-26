@@ -1,22 +1,18 @@
-import { StyleSheet, Text, Pressable, View } from "react-native";
+import { StyleSheet, Text, Pressable, View, Image } from "react-native";
 import { Link } from "expo-router";
-import { Avatar } from "tamagui";
 
-export default function friendListItem({ item }: any) {
+export default function friendListItem({ friend }: any) {
   return (
-    <Link href={`/(tabs)/friends/${item.name}`} asChild>
+    <Link href={`/(tabs)/friends/${friend.username}`} asChild>
       <Pressable style={styles.friendContainer}>
         <View style={styles.friendTitle}>
-          <Avatar circular size="$4">
-            <Avatar.Image src={item.imageUrl} />
-            <Avatar.Fallback bc="grey" />
-          </Avatar>
-          <Text style={styles.friendName}>{item.name}</Text>
+          <Image source={require("@/assets/images/default.png")} className="w-[40px] h-[40px] rounded-full" />
+          <Text style={styles.friendName}>{friend.username}</Text>
         </View>
 
         <View style={styles.friendSubtitle}>
-          <Text style={styles.subValue}>{item.status}</Text>
-          <Text style={styles.subValue}>${item.amount}</Text>
+          <Text style={styles.subValue}>settled</Text>
+          <Text style={styles.subValue}>$0</Text>
         </View>
       </Pressable>
     </Link>

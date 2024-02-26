@@ -1,6 +1,6 @@
 import { View, FlatList, Pressable, Alert, Text } from "react-native";
 // import { groups } from "@/constants/Data";
-import FriendsListItem from "@/src/components/FriendsListItem";
+import GroupsListItem from "./GroupsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Session } from "@supabase/supabase-js";
@@ -30,7 +30,7 @@ export default function Groups({ session }: { session: Session }) {
         const { data: groups, error } = await supabase.from("groups").select().in("id", data.groupIds);
 
         if (error) throw error;
-        if (groups.length > 0) setGroups(groups);
+        if (groups) setGroups(groups);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -66,7 +66,7 @@ export default function Groups({ session }: { session: Session }) {
           <Text className="text-center text-base">No groups added yet.</Text>
         </View>
       ) : (
-        <FlatList data={groups} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+        <FlatList data={groups} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <GroupsListItem group={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
       )}
 
       <Link href="/add-expense/" asChild>

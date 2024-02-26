@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabase";
 
 export default function Friends({ session }: { session: Session }) {
   const [loading, setLoading] = useState(false);
-  const [friends, setFriends] = useState<{ name: string }[]>([]);
+  const [friends, setFriends] = useState<{ username: string }[]>([]);
 
   useEffect(() => {
     if (session) getFriends();
@@ -20,13 +20,16 @@ export default function Friends({ session }: { session: Session }) {
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
-      const { data, error, status } = await supabase.from("users").select().eq("id", session?.user.id).single();
+      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
       if (error && status !== 406) {
         throw error;
       }
 
       if (data) {
-        setFriends(data.friends);
+        const { data: friends, error } = await supabase.from("users").select().in("email", data.friendsEmail);
+
+        if (error) throw error;
+        if (friends) setFriends(friends);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -57,13 +60,12 @@ export default function Friends({ session }: { session: Session }) {
           )
         }}
       />
-      {/* <Text>{JSON.stringify(friends.length)}</Text> */}
       {friends.length == 0 ? (
         <View className="min-h-full flex justify-center">
           <Text className="text-center text-base">No friends added yet.</Text>
         </View>
       ) : (
-        <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+        <FlatList data={friends} keyExtractor={(item, index) => item.username + index} renderItem={({ item }) => <FriendsListItem friend={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
       )}
 
       <Link href="/add-expense/" asChild>
