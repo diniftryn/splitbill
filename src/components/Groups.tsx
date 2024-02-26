@@ -61,7 +61,13 @@ export default function Groups({ session }: { session: Session }) {
           )
         }}
       />
-      <FlatList data={groups} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+      {groups.length == 0 ? (
+        <View className="min-h-full flex justify-center">
+          <Text className="text-center text-base">No groups added yet.</Text>
+        </View>
+      ) : (
+        <FlatList data={groups} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+      )}
 
       <Link href="/add-expense/" asChild>
         <Pressable className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">

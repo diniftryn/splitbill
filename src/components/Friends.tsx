@@ -1,5 +1,5 @@
 import { View, FlatList, Pressable, Alert, Text } from "react-native";
-import { friends } from "@/constants/Data";
+// import { friends } from "@/constants/Data";
 import FriendsListItem from "@/src/components/FriendsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
@@ -8,43 +8,37 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function Friends({ session }: { session: Session }) {
-  // const [loading, setLoading] = useState(false);
-  // const [friends, setFriends] = useState<{ name: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [friends, setFriends] = useState<{ name: string }[]>([]);
 
-  // useEffect(() => {
-  //   if (session) getProfile();
-  // }, [session]);
+  useEffect(() => {
+    if (session) getFriends();
+  }, [session]);
 
-  // async function getProfile() {
-  //   try {
-  //     setLoading(true);
-  //     if (!session?.user) throw new Error("No user on the session!");
+  async function getFriends() {
+    try {
+      setLoading(true);
+      if (!session?.user) throw new Error("No user on the session!");
 
-  //     const { data, error, status } = await supabase.from("users").select().eq("id", session?.user.id).single();
-  //     if (error && status !== 406) {
-  //       throw error;
-  //     }
+      const { data, error, status } = await supabase.from("users").select().eq("id", session?.user.id).single();
+      if (error && status !== 406) {
+        throw error;
+      }
 
-  //     if (data) {
-  //       setFriends(data.friends);
-  //     }
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       Alert.alert(error.message);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
+      if (data) {
+        setFriends(data.friends);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <View className="bg-purple-300 min-h-full">
-      {/* <View className="bg-[#EDF76A] p-5"></View>
-        <View className="bg-[#C8AFE9] p-5"></View>
-        <View className="bg-[#F7CDE4] p-5"></View>
-        <View className="bg-[#FDF3FD] p-5"></View>
-        <View className="bg-[#F6D238] p-5"></View>
-        <Text className="gray text-gray-500 p-5"></Text> */}
       <Stack.Screen
         options={{
           headerShown: true,
@@ -63,7 +57,14 @@ export default function Friends({ session }: { session: Session }) {
           )
         }}
       />
-      <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+      {/* <Text>{JSON.stringify(friends.length)}</Text> */}
+      {friends.length == 0 ? (
+        <View className="min-h-full flex justify-center">
+          <Text className="text-center text-base">No friends added yet.</Text>
+        </View>
+      ) : (
+        <FlatList data={friends} keyExtractor={(item, index) => item.name + index} renderItem={({ item }) => <FriendsListItem item={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+      )}
 
       <Link href="/add-expense/" asChild>
         <Pressable className="border border-black rounded-full bg-[#EDF76A] absolute bottom-[2px] p-2 right-[41vw] z-50">
