@@ -1,18 +1,21 @@
-import { StyleSheet, Text, Pressable, View } from "react-native";
+import { StyleSheet, Text, Pressable, View, Image } from "react-native";
 import { Link } from "expo-router";
-// import { Avatar } from "tamagui";
+import { imageMap } from "@/assets/images";
 
 export default function groupsListItem({ group }: any) {
+  const imagePath = imageMap[group.imageUrl];
+
   return (
     <Link href={`/(tabs)/groups/${group.name}`} asChild>
       <Pressable style={styles.groupContainer}>
         <View style={styles.groupTitle}>
+          <Image source={imagePath} className="w-[50px] h-[50px] rounded-full" />
           <Text style={styles.groupName}>{group.name}</Text>
         </View>
 
         <View style={styles.groupSubtitle}>
-          {/* <Text style={styles.subValue}>{group.status}</Text>
-          <Text style={styles.subValue}>${group.amount}</Text> */}
+          <Text style={styles.subValue}>owed</Text>
+          <Text style={styles.subValue}>$0</Text>
         </View>
       </Pressable>
     </Link>

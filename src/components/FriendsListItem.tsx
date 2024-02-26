@@ -6,7 +6,7 @@ export default function friendListItem({ friend }: any) {
     <Link href={`/(tabs)/friends/${friend.username}`} asChild>
       <Pressable style={styles.friendContainer}>
         <View style={styles.friendTitle}>
-          <Image source={require("@/assets/images/default.png")} className="w-[40px] h-[40px] rounded-full" />
+          <Image source={require("@/assets/images/default.png")} className="w-[50px] h-[50px] rounded-full" />
           <Text style={styles.friendName}>{friend.username}</Text>
         </View>
 
