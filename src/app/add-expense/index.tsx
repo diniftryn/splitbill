@@ -1,9 +1,10 @@
-import { View, Text, Button, GestureResponderEvent, TouchableOpacity, Keyboard, Alert } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, Pressable, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { RadioButton, TextInput } from "react-native-paper";
 import { supabase } from "@/src/lib/supabase";
-import { router } from "expo-router";
+import { Link, Stack, router } from "expo-router";
+import { EvilIcons } from "@expo/vector-icons";
 
 export default function AddExpenseModal() {
   const participants = [
@@ -17,8 +18,16 @@ export default function AddExpenseModal() {
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
   const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
-  const [payerId, setPayerId] = useState("");
+  const [payerId, setPayerId] = useState("1");
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
+
+  function formatDate(date: Date) {
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    });
+  }
 
   function calculateSplitAmounts(amount: string, method: string, percentage: number[]) {
     const splitAmounts = [];
@@ -77,61 +86,72 @@ export default function AddExpenseModal() {
   }
 
   return (
-    <TouchableOpacity onPress={Keyboard.dismiss}>
-      <View>
-        <Button title="Submit" onPress={handleSubmit} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View className="bg-pink-200 flex-1 items-center gap-y-5 pt-10">
+        <Stack.Screen
+          options={{
+            title: "new expense",
+            headerStyle: { backgroundColor: "#EDF76A" },
+            // headerStyle: {
+            //   backgroundColor: "rgb(216 180 254)"
+            // },
+            headerLeft: () => (
+              <Link href="../">
+                <EvilIcons name="close" size={24} color="black" />
+              </Link>
+            ),
+            headerRight: () => <Button title="Submit" onPress={handleSubmit} />
+          }}
+        />
 
-        <Text>Description:</Text>
-        <TextInput value={description} onChangeText={setDescription} />
-
-        <Text>Amount:</Text>
-        <TextInput value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
-
-        <Text>Split Method:</Text>
-        <View>
-          <RadioButton.Group
-            onValueChange={value => {
-              if (value === "equally") calculateSplitAmounts(amount, value, percentage);
-              if (value === "custom") calculateSplitAmounts(amount, "custom", Array(participants.length).fill(0));
-            }}
-            value={splitMethod}
-          >
-            <View className="flex flex-row">
-              <View className="flex flex-row items-center">
-                <View className="rounded-full border">
-                  <RadioButton value="equally" />
-                </View>
-                <Text className="pl-2">Split Equally</Text>
-              </View>
-              <View className="flex flex-row items-center">
-                <View className="rounded-full border">
-                  <RadioButton value="custom" />
-                </View>
-                <Text className="pl-2">Custom Split</Text>
-              </View>
-            </View>
-          </RadioButton.Group>
-
-          <View>
-            {participants.map((user, index) => (
-              <View key={index} className="flex flex-row">
-                <Text>{user.username}</Text>
-                <TextInput className="mx-2" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
-                <TextInput value={splitAmounts[index].toString()} readOnly />
-              </View>
-            ))}
+        <View className="w-[70vw] items-center">
+          <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
+            <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
+          </View>
+          <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
+            <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={description} onChangeText={setDescription} />
+            <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="$0.00" placeholderTextColor="gray" value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
           </View>
         </View>
 
-        <Text>Payer:</Text>
-        <Text>Selected payerId: {payerId}</Text>
-        <Picker id="payerId" selectedValue={payerId} onValueChange={(value: string) => setPayerId(value)}>
-          <Picker.Item label="Select Payer" value="equal" />
+        {/* <Link href="/add-expense/split-details" asChild>
+          <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg">
+            <Text>paid by you and split equally</Text>
+          </TouchableOpacity>
+        </Link> */}
+
+        <View className="flex-row items-center gap-x-5">
+          <Text className="text-lg pb-1">paid by:</Text>
           {participants.map((user: any) => (
-            <Picker.Item key={user.id} label={user.username} value={user.id} />
+            <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
+              <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
+            </TouchableOpacity>
           ))}
-        </Picker>
+        </View>
+
+        <View className="flex-row w-[60vw]">
+          <TouchableOpacity className={`flex-1 px-3 py-1 border border-r-[0.5px] ${splitMethod === "equally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "equally", percentage)}>
+            <Text className="text-base font-medium text-center">equally</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className={`flex-1 px-3 py-1 border border-l-[0.5px] ${splitMethod === "custom" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "custom", Array(participants.length).fill(0))}>
+            <Text className="text-base font-medium text-center">unequally</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="w-[80vw] border rounded-3xl bg-white py-5 px-3">
+          {participants.map((user, index) => (
+            <View key={index} className="flex flex-row items-center px-2">
+              <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
+              <View className="w-1/3">
+                <TextInput className="w-20 border-b-2 text-center text-base" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
+              </View>
+              <View className="w-1/3 items-end">
+                <TextInput className="w-20 border-b-2 text-base text-center" value={splitAmounts[index].toString()} />
+              </View>
+            </View>
+          ))}
+        </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 }
