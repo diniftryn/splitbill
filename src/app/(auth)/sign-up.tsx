@@ -20,20 +20,28 @@ export default function SignUpScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Stack.Screen options={{ title: "Sign up" }} />
+      <View style={styles.container} className="bg-purple-300">
+        <Stack.Screen
+          options={{
+            headerTitle: "Create Account",
+            headerTintColor: "black",
+            headerStyle: {
+              backgroundColor: "#EDF76A"
+            }
+          }}
+        />
 
         <Text style={styles.label}>Email</Text>
-        <TextInput value={email} onChangeText={setEmail} placeholder="jon@gmail.com" style={styles.input} />
+        <TextInput value={email} onChangeText={setEmail} placeholder="your-email@gmail.com" placeholderTextColor="#000" style={styles.input} />
 
         <Text style={styles.label}>Password</Text>
-        <TextInput value={password} onChangeText={setPassword} placeholder="" style={styles.input} secureTextEntry />
+        <TextInput value={password} onChangeText={setPassword} placeholder="••••••••" placeholderTextColor="#000" style={styles.input} secureTextEntry />
 
-        <Button onPress={signUpWithEmail} disabled={loading}>
-          {loading ? "Creating account..." : "Create account"}{" "}
+        <Button onPress={signUpWithEmail} disabled={loading} className="mt-5 mb-3 bg-[#EDF76A]">
+          <Text className="text-lg text-black">{loading ? "Signing Up..." : "Sign Up"}</Text>
         </Button>
         <Link href="/sign-in" style={styles.textButton}>
-          Sign in
+          Sign In
         </Link>
       </View>
     </TouchableWithoutFeedback>
@@ -47,21 +55,21 @@ const styles = StyleSheet.create({
     flex: 1
   },
   label: {
-    color: "gray"
+    color: "black",
+    fontSize: 16
   },
   input: {
-    borderWidth: 1,
-    borderColor: "gray",
+    fontSize: 16,
+    borderBottomWidth: 1,
     padding: 10,
     marginTop: 5,
     marginBottom: 20,
-    backgroundColor: "white",
     borderRadius: 5
   },
   textButton: {
     alignSelf: "center",
-    fontWeight: "bold",
-    color: Colors.light.tint,
-    marginVertical: 10
+    fontWeight: "400",
+    marginVertical: 10,
+    fontSize: 18
   }
 });
