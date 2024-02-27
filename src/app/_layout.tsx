@@ -8,6 +8,7 @@ import { TamaguiProvider } from "tamagui";
 import { config } from "../../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import AuthProvider from "../providers/AuthProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,12 +49,14 @@ function RootLayoutNav() {
   return (
     <TamaguiProvider config={config} defaultTheme={colorScheme as any}>
       <ThemeProvider value={DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
-          <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
-          <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
-        </Stack>
+        <AuthProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
+            <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
+            <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
+          </Stack>
+        </AuthProvider>
       </ThemeProvider>
     </TamaguiProvider>
   );

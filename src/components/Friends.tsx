@@ -7,39 +7,7 @@ import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
-export default function Friends({ session }: { session: Session }) {
-  const [loading, setLoading] = useState(false);
-  const [friends, setFriends] = useState<{ username: string }[]>([]);
-
-  useEffect(() => {
-    if (session) getFriends();
-  }, [session]);
-
-  async function getFriends() {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        const { data: friends, error } = await supabase.from("users").select().in("email", data.friendsEmail);
-
-        if (error) throw error;
-        if (friends) setFriends(friends);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function Friends({ friends }: { friends: User[] }) {
   return (
     <View className="bg-purple-300 min-h-full">
       <Stack.Screen
