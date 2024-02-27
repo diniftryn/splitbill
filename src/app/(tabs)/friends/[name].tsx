@@ -1,25 +1,27 @@
-import { View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
-import ExpensesList from "@/src/components/ExpensesList";
+import { Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { supabase } from "@/src/lib/supabase";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/src/providers/AuthProvider";
+import Expenses from "@/src/components/Expenses";
 
-export default function FriendsExpensesScreen() {
-  const { name } = useLocalSearchParams();
+export default function GroupsExpensesScreen() {
+  const { user } = useAuth();
+  const { name, friendId } = useLocalSearchParams();
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  return (
-    <View className="flex-1 bg-purple-300">
-      <Stack.Screen
-        options={{
-          headerTitle: name as string,
-          headerTintColor: "black",
-          headerStyle: {
-            backgroundColor: "#EDF76A"
-          }
-        }}
-      />
+  const groupId = (user?.id as string) + "-" + friendId;
 
-      <View style={{ padding: 10 }}>
-        <ExpensesList friendName={name} />
-      </View>
-    </View>
-  );
+  async function getExpenses() {
+    const { data, error } = await supabase.from("expenses").select().eq("groupId", groupId);
+    if (!error) {
+      setExpenses(data);
+    }
+  }
+
+  useEffect(() => {
+    getExpenses();
+  }, [expenses]);
+
+  return <Expenses expenses={expenses} name={name as string} />;
 }

@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 
 export default function friendListItem({ friend }: any) {
   return (
-    <Link href={`/(tabs)/friends/${friend.username}`} asChild>
+    <Link href={`/(tabs)/friends/${friend.username}?friendId=${friend.id}`} asChild>
       <Pressable style={styles.friendContainer}>
         <View style={styles.friendTitle}>
           <Image source={require("@/assets/images/default.png")} className="w-[50px] h-[50px] rounded-full" />

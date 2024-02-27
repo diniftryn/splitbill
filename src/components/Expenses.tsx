@@ -1,11 +1,8 @@
-import { View, FlatList, Pressable, Alert, Text, Button } from "react-native";
+import { View, FlatList, Pressable, Text } from "react-native";
 // import { expenses } from "@/constants/Data";
 import ExpensesListItem from "@/src/components/ExpensesListItem";
 import { Link, Stack } from "expo-router";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Session } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Expenses({ name, expenses }: { name: string; expenses: Expense[] }) {
   return (
