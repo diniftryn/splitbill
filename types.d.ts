@@ -1,8 +1,8 @@
 type User = {
   id: string | number;
   username: string;
-  friendIds: [] | null;
-  groupIds: [] | null;
+  friendIds: string[] | null;
+  groupIds: string[] | null;
 };
 
 type Group = {
