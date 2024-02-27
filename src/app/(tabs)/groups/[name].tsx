@@ -1,25 +1,22 @@
-import { View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
-import ExpensesList from "@/src/components/ExpensesList";
+import { useLocalSearchParams } from "expo-router";
+import Expenses from "@/src/components/Expenses";
+import { supabase } from "@/src/lib/supabase";
+import { useEffect, useState } from "react";
 
 export default function GroupsExpensesScreen() {
-  const { name } = useLocalSearchParams();
+  const { name, groupId } = useLocalSearchParams();
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  return (
-    <View className="flex-1 bg-purple-300">
-      <Stack.Screen
-        options={{
-          headerTitle: name as string,
-          headerTintColor: "black",
-          headerStyle: {
-            backgroundColor: "#EDF76A"
-          }
-        }}
-      />
+  async function getExpenses() {
+    const { data, error } = await supabase.from("expenses").select().eq("groupId", groupId);
+    if (!error) {
+      setExpenses(data);
+    }
+  }
 
-      <View style={{ padding: 10 }}>
-        <ExpensesList groupName={name} />
-      </View>
-    </View>
-  );
+  useEffect(() => {
+    getExpenses();
+  }, [expenses]);
+
+  return <Expenses expenses={expenses} name={name as string} />;
 }

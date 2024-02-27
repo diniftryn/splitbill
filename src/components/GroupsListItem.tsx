@@ -6,7 +6,7 @@ export default function groupsListItem({ group }: any) {
   const imagePath = imageMap[group.imageUrl];
 
   return (
-    <Link href={`/(tabs)/groups/${group.name}`} asChild>
+    <Link href={`/(tabs)/groups/${group.name}?groupId=${group.id}`} asChild>
       <Pressable style={styles.groupContainer}>
         <View style={styles.groupTitle}>
           <Image source={imagePath} className="w-[50px] h-[50px] rounded-full" />
