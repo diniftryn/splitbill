@@ -1,6 +1,5 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image, TextInput } from "react-native";
 import React, { useState } from "react";
-import { TextInput } from "react-native-paper";
 import { supabase } from "@/src/lib/supabase";
 import { Link, Stack, router } from "expo-router";
 import { EvilIcons, Foundation } from "@expo/vector-icons";

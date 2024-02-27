@@ -35,10 +35,10 @@ export default function SignInScreen() {
         />
 
         <Text style={styles.label}>Email</Text>
-        <TextInput value={email} onChangeText={setEmail} placeholder="your-email@gmail.com" placeholderTextColor="#000" style={styles.input} />
+        <TextInput value={email} onChangeText={setEmail} placeholder="your-email@gmail.com" placeholderTextColor="gray" style={styles.input} />
 
         <Text style={styles.label}>Password</Text>
-        <TextInput value={password} onChangeText={setPassword} placeholder="••••••••" placeholderTextColor="#000" style={styles.input} secureTextEntry />
+        <TextInput value={password} onChangeText={setPassword} placeholder="••••••••" placeholderTextColor="gray" style={styles.input} secureTextEntry />
 
         <Button onPress={signInWithEmail} disabled={loading} className="mt-5 mb-3 bg-[#EDF76A]">
           <Text className="text-lg text-black">{loading ? "Signing In..." : "Sign In"}</Text>
