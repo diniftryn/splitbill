@@ -1,4 +1,4 @@
-import { View, FlatList, Pressable, Alert, Text } from "react-native";
+import { View, FlatList, Pressable, Alert, Text, Button } from "react-native";
 // import { friends } from "@/constants/Data";
 import FriendsListItem from "@/src/components/FriendsListItem";
 import { Link, Stack } from "expo-router";
@@ -19,6 +19,7 @@ export default function Friends({ friends }: { friends: User[] }) {
             backgroundColor: "#EDF76A"
           },
           // headerSearchBarOptions: {}
+          headerLeft: () => <Button title="Logout" onPress={async () => await supabase.auth.signOut()} />,
           headerRight: () => (
             <Link href="/add-friends" asChild>
               <Pressable>

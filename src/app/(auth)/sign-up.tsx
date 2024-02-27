@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import { Link, Stack } from "expo-router";
@@ -19,22 +19,24 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: "Sign up" }} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: "Sign up" }} />
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput value={email} onChangeText={setEmail} placeholder="jon@gmail.com" style={styles.input} />
+        <Text style={styles.label}>Email</Text>
+        <TextInput value={email} onChangeText={setEmail} placeholder="jon@gmail.com" style={styles.input} />
 
-      <Text style={styles.label}>Password</Text>
-      <TextInput value={password} onChangeText={setPassword} placeholder="" style={styles.input} secureTextEntry />
+        <Text style={styles.label}>Password</Text>
+        <TextInput value={password} onChangeText={setPassword} placeholder="" style={styles.input} secureTextEntry />
 
-      <Button onPress={signUpWithEmail} disabled={loading}>
-        {loading ? "Creating account..." : "Create account"}{" "}
-      </Button>
-      <Link href="/sign-in" style={styles.textButton}>
-        Sign in
-      </Link>
-    </View>
+        <Button onPress={signUpWithEmail} disabled={loading}>
+          {loading ? "Creating account..." : "Create account"}{" "}
+        </Button>
+        <Link href="/sign-in" style={styles.textButton}>
+          Sign in
+        </Link>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

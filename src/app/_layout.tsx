@@ -51,6 +51,7 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <AuthProvider>
           <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
             <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
