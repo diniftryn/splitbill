@@ -1,11 +1,17 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-paper";
 import { supabase } from "@/src/lib/supabase";
 import { Link, Stack, router } from "expo-router";
-import { EvilIcons } from "@expo/vector-icons";
+import { EvilIcons, Foundation } from "@expo/vector-icons";
+
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { randomUUID } from "expo-crypto";
+import { decode } from "base64-arraybuffer";
 
 export default function ExpenseForm({ participants, group, percentage }: { participants: User[]; group: Group; percentage: number[] }) {
+  const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
@@ -14,6 +20,65 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
+
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      permissionResult.canAskAgain = true;
+      Alert.alert("You've refused to allow this app to access your camera!");
+      return;
+    } else if (permissionResult.granted === true) {
+      const result = await ImagePicker.launchCameraAsync();
+
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+        console.log(result.assets[0].uri);
+      }
+    }
+  };
+
+  const pickImage = async () => {
+    // const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    // if (permissionResult.granted === false) {
+    //   Alert.alert("You've refused to allow this app to access your gallery!");
+    //   await ImagePicker.requestMediaLibraryPermissionsAsync();
+    //   return;
+    // } else if (permissionResult.granted === true) {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      console.log(result.assets[0].uri);
+    }
+    // }
+  };
+
+  const uploadImage = async () => {
+    if (!image?.startsWith("file://")) {
+      return;
+    }
+
+    const base64 = await FileSystem.readAsStringAsync(image, {
+      encoding: "base64"
+    });
+    const filePath = `${randomUUID()}.png`;
+    const contentType = "image/png";
+
+    const { data, error } = await supabase.storage.from("expense-images").upload(filePath, decode(base64), { contentType });
+
+    console.log(error);
+
+    if (data) {
+      return data.path;
+    }
+  };
 
   function formatDate(date: Date) {
     return date.toLocaleDateString("en-GB", {
@@ -47,7 +112,9 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   async function handleSubmit(event: GestureResponderEvent) {
     event.preventDefault();
 
-    const submitExpense = { description, amount, payerId, createdAt: new Date(), groupId: group.id };
+    const imagePath = await uploadImage();
+
+    const submitExpense = { description, amount, payerId, createdAt: new Date(), groupId: group.id, image: imagePath };
     console.log(submitExpense);
     const { data: dataExpense, error: errorExpense } = await supabase.from("expenses").insert(submitExpense).select();
     if (errorExpense) console.log("Unable to add. Error: " + JSON.stringify(errorExpense));
@@ -97,6 +164,21 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
             headerRight: () => <Button title="Submit" onPress={handleSubmit} />
           }}
         />
+
+        <TouchableOpacity className="px-2 pt-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
+          {image ? (
+            <View>
+              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+              <Button title="Delete Image" onPress={() => setImage("")} />
+            </View>
+          ) : (
+            <View className="items-center p-2">
+              <Foundation name="camera" size={40} color="black" />
+              <Text className="text-base">add receipt</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        <Button title="Choose from gallery" onPress={pickImage} />
 
         <View className="w-[70vw] items-center">
           <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
