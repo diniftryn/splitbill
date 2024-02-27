@@ -1,4 +1,4 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image, TextInput } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image, TextInput, SafeAreaView } from "react-native";
 import React, { useState } from "react";
 import { supabase } from "@/src/lib/supabase";
 import { Link, Stack, router } from "expo-router";
@@ -164,36 +164,42 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           }}
         />
 
-        <TouchableOpacity className="px-2 pt-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
-          {image ? (
-            <View>
-              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-              <Button title="Delete Image" onPress={() => setImage("")} />
-            </View>
-          ) : (
-            <View className="items-center p-2">
-              <Foundation name="camera" size={40} color="black" />
-              <Text className="text-base">add receipt</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-        <Button title="Choose from gallery" onPress={pickImage} />
+        <View className={openDetails ? "hidden" : "grid items-center gap-y-5"}>
+          <TouchableOpacity className="px-2 pt-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
+            {image ? (
+              <View>
+                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+                <Button title="Delete Image" onPress={() => setImage("")} />
+              </View>
+            ) : (
+              <View className="items-center p-2">
+                <Foundation name="camera" size={40} color="black" />
+                <Text className="text-base">add receipt</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <Button title="Choose from gallery" onPress={pickImage} />
 
-        <View className="w-[70vw] items-center">
-          <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
-            <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
-          </View>
-          <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
-            <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={description} onChangeText={setDescription} />
-            <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="$0.00" placeholderTextColor="gray" value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
+          <View className="w-[70vw] items-center">
+            <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
+              <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
+            </View>
+            <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
+              <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={description} onChangeText={setDescription} />
+              <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="$0.00" placeholderTextColor="gray" value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
+            </View>
           </View>
         </View>
 
         {/* <Link href="/add-expense/split-details" asChild> */}
         <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg" onPress={() => setOpenDetails(!openDetails)}>
-          <Text>
-            paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
-          </Text>
+          {openDetails ? (
+            <Text>Go Back</Text>
+          ) : (
+            <Text>
+              paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
+            </Text>
+          )}
         </TouchableOpacity>
         {/* </Link> */}
 
@@ -221,10 +227,10 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
               <View key={index} className="flex flex-row items-center px-2">
                 <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
                 <View className="w-1/3">
-                  <TextInput className="w-20 border-b-2 text-center text-base" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
+                  <TextInput className="w-20 border-b-2 text-center text-base pb-1" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
                 </View>
                 <View className="w-1/3 items-end">
-                  <TextInput className="w-20 border-b-2 text-base text-center" value={splitAmounts[index].toString()} />
+                  <TextInput className="w-20 pb-1 text-base text-center" value={splitAmounts[index].toString()} />
                 </View>
               </View>
             ))}
