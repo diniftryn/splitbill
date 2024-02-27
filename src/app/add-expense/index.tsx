@@ -1,7 +1,6 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, Pressable, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { RadioButton, TextInput } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { supabase } from "@/src/lib/supabase";
 import { Link, Stack, router } from "expo-router";
 import { EvilIcons } from "@expo/vector-icons";
