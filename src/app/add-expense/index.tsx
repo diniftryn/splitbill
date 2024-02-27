@@ -1,122 +1,137 @@
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Pressable } from "react-native";
+import { View, Text, Button, GestureResponderEvent, TouchableOpacity, Keyboard, Alert } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
-import { Foundation } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { Link, Stack } from "expo-router";
-import { EvilIcons } from "@expo/vector-icons";
+import { RadioButton, TextInput } from "react-native-paper";
+import { supabase } from "@/src/lib/supabase";
+import { router } from "expo-router";
 
 export default function AddExpenseModal() {
-  const [expenseName, setExpenseName] = useState("");
-  const [expenseAmount, setExpenseAmount] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [splitType, setSplitType] = useState("equal");
-  const [splitAmount, setSplitAmount] = useState("");
-  const [friendToSplitWith, setFriendToSplitWith] = useState("");
+  const participants = [
+    { id: "1", username: "Dini" },
+    { id: "2", username: "Sher" }
+  ];
+  const group = { id: "43", name: "Coffee lover", expenseIds: [] };
+  const percentage = [50, 50];
 
-  function formatDate(date: Date) {
-    return date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric"
-    });
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [splitMethod, setSplitMethod] = useState("equally");
+  const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
+  const [payerId, setPayerId] = useState("");
+  const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
+
+  function calculateSplitAmounts(amount: string, method: string, percentage: number[]) {
+    const splitAmounts = [];
+
+    for (let i = 0; i < participants.length; i++) {
+      splitAmounts[i] = (percentage[i] / 100) * parseFloat(amount);
+    }
+    setAmount(amount);
+    setSplitMethod(method);
+    setSplitPercentage(percentage);
+    setSplitAmounts(splitAmounts);
   }
 
-  function calculateSplitAmount() {
-    if (splitType == "equal") {
-      const amt = parseFloat(expenseAmount) / 2;
-      setSplitAmount(amt.toString());
-    }
+  function handleSplitPercentageChange(value: string, index: number) {
+    const newPercentage = [...splitPercentage];
+    newPercentage[index] = parseInt(value);
+    setSplitPercentage(newPercentage);
+    const newSplitAmounts = [...splitAmounts];
+    newSplitAmounts[index] = (parseInt(value) / 100) * parseFloat(amount);
+    setSplitAmounts(newSplitAmounts);
   }
 
-  function handleAddExpense() {
-    if (!expenseName.trim() || !expenseAmount.trim()) {
-      alert("Please fill in both fields");
-      return;
+  async function handleSubmit(event: GestureResponderEvent) {
+    event.preventDefault();
+
+    const submitExpense = { description, amount, payerId, createdAt: new Date(), groupId: group.id };
+    console.log(submitExpense);
+    const { data: dataExpense, error: errorExpense } = await supabase.from("expenses").insert(submitExpense).select();
+    if (errorExpense) console.log("Unable to add. Error: " + JSON.stringify(errorExpense));
+    console.log("dataExpense " + JSON.stringify(dataExpense));
+
+    if (dataExpense) {
+      let submitParticipants = [];
+      for (let i = 0; i < participants.length; i++) {
+        submitParticipants.push({ expenseId: dataExpense[0].id, userId: participants[i].id, shareAmount: splitAmounts[i] });
+      }
+      const { data: dataParticipant, error: errorParticipant } = await supabase.from("participants").insert(submitParticipants).select();
+      if (errorParticipant) console.log("Unable to add. Error: " + errorParticipant);
+      if (dataParticipant) {
+        console.log(JSON.stringify(dataParticipant) + " successfully added");
+
+        const expenseIdsToUpdate = group.expenseIds ? [...group.expenseIds, dataExpense[0].id] : [dataExpense[0].id];
+
+        const { data: dataUpdateGroupExpenses, error: errorUpdateGroupExpenses } = await supabase.from("groups").update({ expenseIds: expenseIdsToUpdate }).eq("id", group.id).select();
+
+        if (errorUpdateGroupExpenses) {
+          console.log("Unable to update group users. Error: " + JSON.stringify(errorUpdateGroupExpenses));
+          Alert.alert("Could not update group users");
+        }
+        if (!errorUpdateGroupExpenses) {
+          console.log("dataUpdateGroupExpenses " + JSON.stringify(dataUpdateGroupExpenses));
+          router.replace("/(tabs)/groups");
+        }
+      }
     }
-
-    const expense = {
-      name: expenseName,
-      amount: parseFloat(expenseAmount),
-      date: selectedDate,
-      friend: friendToSplitWith,
-      split: splitType
-    };
-
-    setExpenseName("");
-    setExpenseAmount("");
-    setSelectedDate(new Date());
-    setFriendToSplitWith("");
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="items-center gap-y-10 flex-1 bg-pink-200">
-        <Stack.Screen
-          options={{
-            title: "new expense",
-            // headerStyle: { backgroundColor: "#EDF76A" },
-            // headerStyle: {
-            //   backgroundColor: "rgb(216 180 254)"
-            // },
-            headerLeft: () => (
-              <Link href="../">
-                <EvilIcons name="close" size={24} color="black" />
-              </Link>
-            ),
-            headerRight: () => (
-              <TouchableOpacity onPress={handleAddExpense} className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
-                <Ionicons name="checkmark" size={30} color="black" />
-              </TouchableOpacity>
-            )
-          }}
-        />
+    <TouchableOpacity onPress={Keyboard.dismiss}>
+      <View>
+        <Button title="Submit" onPress={handleSubmit} />
 
-        <View className="border-b-[1px] border-gray-500 w-full p-2 flex-row items-center">
-          <Text className="text-gray-500">split between you and: </Text>
-          <TouchableOpacity className="w-full">
-            <TextInput placeholder="type friend's name" placeholderTextColor="gray" onChangeText={text => setFriendToSplitWith(text)} />
-          </TouchableOpacity>
-        </View>
+        <Text>Description:</Text>
+        <TextInput value={description} onChangeText={setDescription} />
 
-        {/* <View className="pt-2 items-center">
-          <Text>if your friend's name does not appear in the list, </Text>
-          <TouchableOpacity className="border border-black rounded-xl px-2 bg-[#F6D238]">
-            <Text>add them</Text>
-          </TouchableOpacity>
-          <Text> first before adding an expense</Text>
-        </View> */}
+        <Text>Amount:</Text>
+        <TextInput value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
 
-        <View className="pt-10 w-[70vw] items-center">
-          <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
-            <Text className="text-lg font-medium">{formatDate(selectedDate)}</Text>
-          </View>
-          <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
-            <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={expenseName} onChangeText={text => setExpenseName(text)} />
-            <TextInput
-              className="border-b-[1px] text-lg text-black p-2"
-              placeholder="$0.00"
-              placeholderTextColor="gray"
-              value={expenseAmount}
-              onChangeText={text => {
-                setExpenseAmount(text);
-              }}
-              keyboardType="numeric"
-            />
+        <Text>Split Method:</Text>
+        <View>
+          <RadioButton.Group
+            onValueChange={value => {
+              if (value === "equally") calculateSplitAmounts(amount, value, percentage);
+              if (value === "custom") calculateSplitAmounts(amount, "custom", Array(participants.length).fill(0));
+            }}
+            value={splitMethod}
+          >
+            <View className="flex flex-row">
+              <View className="flex flex-row items-center">
+                <View className="rounded-full border">
+                  <RadioButton value="equally" />
+                </View>
+                <Text className="pl-2">Split Equally</Text>
+              </View>
+              <View className="flex flex-row items-center">
+                <View className="rounded-full border">
+                  <RadioButton value="custom" />
+                </View>
+                <Text className="pl-2">Custom Split</Text>
+              </View>
+            </View>
+          </RadioButton.Group>
+
+          <View>
+            {participants.map((user, index) => (
+              <View key={index} className="flex flex-row">
+                <Text>{user.username}</Text>
+                <TextInput className="mx-2" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
+                <TextInput value={splitAmounts[index].toString()} readOnly />
+              </View>
+            ))}
           </View>
         </View>
 
-        <Link href="/add-expense/split-details" asChild>
-          <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg">
-            <Text>paid by you and split equally</Text>
-          </TouchableOpacity>
-        </Link>
-
-        <TouchableOpacity className="items-center p-5 border border-dashed border-black bg-[#FDF3FD]" onPress={Keyboard.dismiss}>
-          <Foundation name="camera" size={40} color="black" />
-          <Text className="text-base">add receipt</Text>
-          <Text className="text-gray-500 text-xs">(optional)</Text>
-        </TouchableOpacity>
+        <Text>Payer:</Text>
+        <Text>Selected payerId: {payerId}</Text>
+        <Picker id="payerId" selectedValue={payerId} onValueChange={(value: string) => setPayerId(value)}>
+          <Picker.Item label="Select Payer" value="equal" />
+          {participants.map((user: any) => (
+            <Picker.Item key={user.id} label={user.username} value={user.id} />
+          ))}
+        </Picker>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 }
