@@ -1,5 +1,5 @@
 import { Image } from "react-native";
-import React, { ComponentProps, useEffect, useMemo, useState } from "react";
+import React, { ComponentProps, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type RemoteImageProps = {
@@ -14,7 +14,7 @@ export default function RemoteImage({ path, fallback, ...imageProps }: RemoteIma
     if (!path) return;
     (async () => {
       setImage("");
-      const { data, error } = await supabase.storage.from("product-images").download(path);
+      const { data, error } = await supabase.storage.from("expense-images").download(path);
 
       if (error) {
         console.log(error);

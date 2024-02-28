@@ -18,5 +18,5 @@ export default function GroupsExpensesScreen() {
     getExpenses();
   }, [expenses]);
 
-  return <Expenses expenses={expenses} name={name as string} />;
+  return <Expenses expenses={expenses} name={name as string} path="groups" />;
 }

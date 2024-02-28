@@ -9,7 +9,7 @@ type Group = {
   id: string | number;
   name: string;
   imageUrl: string;
-  userIds: string[] | number[];
+  userIds: string[] | number[] | (string | number)[];
   expenseIds: string[] | number[];
 };
 
@@ -20,6 +20,7 @@ type Expense = {
   createdAt: string;
   payerId: string | number;
   groupId: string | number;
+  image: string;
 };
 
 type Participant = {

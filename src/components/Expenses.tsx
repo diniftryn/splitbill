@@ -4,7 +4,7 @@ import ExpensesListItem from "@/src/components/ExpensesListItem";
 import { Link, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function Expenses({ name, expenses }: { name: string; expenses: Expense[] }) {
+export default function Expenses({ name, expenses, path }: { name: string; expenses: Expense[]; path: string }) {
   return (
     <View className="bg-purple-300 min-h-full">
       <Stack.Screen
@@ -22,7 +22,7 @@ export default function Expenses({ name, expenses }: { name: string; expenses: E
           <Text className="text-center text-base">No expenses added yet.</Text>
         </View>
       ) : (
-        <FlatList data={expenses} keyExtractor={(item, index) => item.description + index} renderItem={({ item }) => <ExpensesListItem expense={item} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
+        <FlatList data={expenses} keyExtractor={(item, index) => item.description + index} renderItem={({ item }) => <ExpensesListItem expense={item} path={path} />} onEndReachedThreshold={1} contentInsetAdjustmentBehavior="automatic" />
       )}
 
       <Link href="/add-expense/" asChild>
