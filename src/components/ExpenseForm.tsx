@@ -15,7 +15,7 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
   const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
-  const [payerId, setPayerId] = useState("1");
+  const [payerId, setPayerId] = useState(participants[0].id);
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -147,7 +147,7 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
 
   return (
     <View className="items-center gap-y-10 flex-1">
-      <View className="pt-10 w-[70vw] items-center">
+      <View className={openDetails ? "hidden" : "pt-10 w-[70vw] items-center"}>
         <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
           <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
         </View>
@@ -166,31 +166,15 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
         </View>
       </View>
 
-      <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg mt-10 mb-5" onPress={() => setOpenDetails(!openDetails)}>
-        {openDetails ? (
-          <Text>Go Back</Text>
-        ) : (
-          <Text>
-            paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
-          </Text>
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity className="items-center p-5 border border-dashed border-black bg-[#FDF3FD]" onPress={Keyboard.dismiss}>
-        <Foundation name="camera" size={40} color="black" />
-        <Text className="text-base">add receipt</Text>
-        <Text className="text-gray-500 text-xs">(optional)</Text>
-      </TouchableOpacity>
-
       <View className={openDetails ? "grid items-center gap-y-5" : "hidden"}>
         <View className="flex-row items-center gap-x-5">
           <Text className="text-lg pb-1">paid by:</Text>
-          {/* {participants.length > 0 &&
+          {participants.length > 0 &&
             participants.map((user: any) => (
               <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
                 <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
               </TouchableOpacity>
-            ))} */}
+            ))}
         </View>
 
         <View className="flex-row w-[60vw]">
@@ -216,6 +200,22 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           ))}
         </View>
       </View>
+
+      <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg mt-10 mb-5" onPress={() => setOpenDetails(!openDetails)}>
+        {openDetails ? (
+          <Text>Go Back</Text>
+        ) : (
+          <Text>
+            paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
+          </Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity className={openDetails ? "hidden" : "items-center p-5 border border-dashed border-black bg-[#FDF3FD]"} onPress={Keyboard.dismiss}>
+        <Foundation name="camera" size={40} color="black" />
+        <Text className="text-base">add receipt</Text>
+        <Text className="text-gray-500 text-xs">(optional)</Text>
+      </TouchableOpacity>
     </View>
   );
 }
