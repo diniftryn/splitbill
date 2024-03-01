@@ -1,20 +1,9 @@
-import { View, FlatList, Pressable, Text, ActivityIndicator } from "react-native";
+import { View, FlatList, Pressable, Text } from "react-native";
 import GroupsListItem from "./GroupsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { useGroupList } from "@/src/api/groups";
 
-export default function Groups() {
-  const { data: groups, error, isLoading } = useGroupList();
-
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
-
-  if (error) {
-    return <Text>Failed to fetch groups</Text>;
-  }
-
+export default function Groups({ groups }: { groups: Group[] }) {
   return (
     <View className="bg-purple-300 min-h-full">
       <Stack.Screen

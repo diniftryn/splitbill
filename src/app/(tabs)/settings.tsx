@@ -1,6 +1,7 @@
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, Button } from "react-native";
 import { Stack } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { supabase } from "@/src/lib/supabase";
 
 export default function SettingsScreen() {
   return (
@@ -10,6 +11,8 @@ export default function SettingsScreen() {
           headerShown: false
         }}
       />
+
+      <Button title="Logout" onPress={async () => await supabase.auth.signOut()} />
 
       <View className="w-[70vw]">
         <View className="w-full border border-b-[0.5px] rounded-t-3xl  bg-[#EDF76A] py-2 flex-row justify-center items-center">

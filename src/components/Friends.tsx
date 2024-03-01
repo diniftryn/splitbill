@@ -1,11 +1,7 @@
-import { View, FlatList, Pressable, Alert, Text, Button } from "react-native";
-// import { friends } from "@/constants/Data";
+import { View, FlatList, Pressable, Text } from "react-native";
 import FriendsListItem from "@/src/components/FriendsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Session } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
 
 export default function Friends({ friends }: { friends: User[] }) {
   return (
@@ -19,7 +15,6 @@ export default function Friends({ friends }: { friends: User[] }) {
             backgroundColor: "#EDF76A"
           },
           // headerSearchBarOptions: {}
-          headerLeft: () => <Button title="Logout" onPress={async () => await supabase.auth.signOut()} />,
           headerRight: () => (
             <Link href="/add-friends" asChild>
               <Pressable>
