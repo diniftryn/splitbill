@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack } from "expo-router";
@@ -111,11 +111,6 @@ export default function AddExpenseModal() {
               <Link href="../">
                 <EvilIcons name="close" size={24} color="black" />
               </Link>
-            ),
-            headerRight: () => (
-              <TouchableOpacity className="border border-black rounded-3xl p-1 bg-[#EDF76A]">
-                <Ionicons name="checkmark" size={30} color="black" />
-              </TouchableOpacity>
             )
           }}
         />
