@@ -1,12 +1,12 @@
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Foundation } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack } from "expo-router";
 import { EvilIcons } from "@expo/vector-icons";
 import { useAuth } from "@/src/providers/AuthProvider";
 import { supabase } from "@/src/lib/supabase";
 import ExpenseForm from "@/src/components/ExpenseForm";
+import ExpenseParticipants from "@/src/components/ExpenseParticipants";
 
 export default function AddExpenseModal() {
   const { session, user } = useAuth();
@@ -122,8 +122,20 @@ export default function AddExpenseModal() {
 
         <View className="border-b-[1px] border-gray-500 w-full p-2 flex-row items-center">
           <Text className="text-gray-500">split between you and: </Text>
-          <TouchableOpacity className="w-full">
-            <TextInput placeholder="type friend's name" placeholderTextColor="gray" />
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedFriendOrGroup(null);
+              setIsSelected(false);
+            }}
+          >
+            {selectedFriendOrGroup ? (
+              <View className="flex-row border rounded-3xl px-2 py-1">
+                <Text>{(selectedFriendOrGroup as Group).name ? (selectedFriendOrGroup as Group).name : (selectedFriendOrGroup as User).username}</Text>
+                <Text className="pl-2">x</Text>
+              </View>
+            ) : (
+              <Text className="text-slate-700">select friend or group</Text>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -135,7 +147,7 @@ export default function AddExpenseModal() {
           <Text> first before adding an expense</Text>
         </View> */}
 
-        <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} />
+        {isSelected ? <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={availableFriends} availableGroups={availableGroups} />}
       </View>
     </TouchableWithoutFeedback>
   );

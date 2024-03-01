@@ -1,56 +1,50 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
-import { getFriends, getGroups } from "../api/queries";
+import React from "react";
 
-export default function ExpenseParticipants({ selectedFriend, setSelectedFriend, selectedGroup, setSelectedGroup, setSelectedFriendOrGroup }: any) {
-  const [availableFriends, setAvailableFriends] = useState();
-  const [availableGroups, setAvailableGroups] = useState();
-
-  const friends = getFriends();
-  if (friends.data) {
-    setAvailableFriends(friends.data);
-    setSelectedFriendOrGroup(true);
-  }
-
-  const groups = getGroups();
-  if (groups.data) {
-    setAvailableGroups(groups.data);
-    setSelectedFriendOrGroup(true);
-  }
-
+export default function ExpenseParticipants({ setSelectedFriendOrGroup, setIsSelected, availableFriends, availableGroups }: any) {
   return (
-    <View className="border-b-[1px] border-gray-500 w-full p-2 flex-row items-center">
-      <FlatList
-        data={availableFriends}
-        keyExtractor={(item, index) => item.id + index}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedFriend(item);
-            }}
-          >
-            <Text>{item.username}</Text>
-          </TouchableOpacity>
-        )}
-        onEndReachedThreshold={1}
-        contentInsetAdjustmentBehavior="automatic"
-      />
+    <View className="w-full">
+      <View className="px-5 py-2">
+        <Text className="text-gray-600 text-base">Friends:</Text>
+        <FlatList
+          data={availableFriends}
+          keyExtractor={(item, index) => (item.id as string) + item.username + index}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              className="py-1"
+              onPress={() => {
+                setSelectedFriendOrGroup(item);
+                setIsSelected(true);
+              }}
+            >
+              <Text className="text-base">{item.username}</Text>
+            </TouchableOpacity>
+          )}
+          onEndReachedThreshold={1}
+          contentInsetAdjustmentBehavior="automatic"
+        />
+      </View>
 
-      <FlatList
-        data={availableGroups}
-        keyExtractor={(item, index) => item.id + index}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedGroup(item);
-            }}
-          >
-            <Text>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-        onEndReachedThreshold={1}
-        contentInsetAdjustmentBehavior="automatic"
-      />
+      <View className="px-5 py-2">
+        <Text className="text-gray-600 text-base">Groups:</Text>
+        <FlatList
+          data={availableGroups}
+          keyExtractor={(item, index) => (item.id as string) + index}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              className="py-1"
+              onPress={() => {
+                setSelectedFriendOrGroup(item);
+                setIsSelected(true);
+              }}
+            >
+              <Text className="text-base">{item.name}</Text>
+            </TouchableOpacity>
+          )}
+          onEndReachedThreshold={1}
+          contentInsetAdjustmentBehavior="automatic"
+        />
+      </View>
     </View>
   );
 }
