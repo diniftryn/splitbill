@@ -151,3 +151,5 @@ export const groups = [
     imageUrl: require("../assets/images/clouds10.jpeg")
   }
 ];
+
+export const contacts = ["Ahn Ye-won", "An Min-young", "Cha Hyun-seung", "Cho Min-ji", "Choi Hye-seon", "Choi Jong-woo", "Choi Min-woo", "Choi Seo-eun", "Choi Si-hun", "Jo Yoong-jae", "Kang So-yeon", "Kim Gyu-ri", "Kim Han-bin", "Kim Hyeon-joong", "Kim Jin-young", "Kim Jun-sik", "Kim Se-jun", "Kim Su-min", "Lee Gwan-hee", "Lee Jin-seok", "Lee Nadine", "Lee So-e", "Lim Min-su", "Moon Se-hoon", "Oh Jin-taek", "Park Min-kyu", "Park Se-jeong", "Seong Min-ji", "Shin Dong-woo", "Shin Ji-yeon", "Shin Seul-ki", "Son Won Ik", "Song Ji-a", "Yu Si-eun", "Yun Ha-bin", "Yun Ha-jeong"];
