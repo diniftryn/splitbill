@@ -9,6 +9,7 @@ import { config } from "../../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import AuthProvider from "../providers/AuthProvider";
+import QueryProvider from "../providers/QueryProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,13 +51,15 @@ function RootLayoutNav() {
     <TamaguiProvider config={config} defaultTheme={colorScheme as any}>
       <ThemeProvider value={DefaultTheme}>
         <AuthProvider>
-          <Stack>
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
-            <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
-            <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
-          </Stack>
+          <QueryProvider>
+            <Stack>
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
+              <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
+              <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
+            </Stack>
+          </QueryProvider>
         </AuthProvider>
       </ThemeProvider>
     </TamaguiProvider>
