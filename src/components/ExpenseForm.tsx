@@ -38,25 +38,26 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   };
 
   const pickImage = async () => {
-    // const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    // if (permissionResult.granted === false) {
-    //   Alert.alert("You've refused to allow this app to access your gallery!");
-    //   await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //   return;
-    // } else if (permissionResult.granted === true) {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5
-    });
+    if (permissionResult.granted === false) {
+      Alert.alert("You've refused to allow this app to access your gallery!");
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      return;
+    } else if (permissionResult.granted === true) {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.5
+      });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      console.log(result.assets[0].uri);
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+        console.log(result.assets[0].uri);
+      }
+      // }
     }
-    // }
   };
 
   const uploadImage = async () => {
@@ -149,16 +150,6 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
     <View>
       <Stack.Screen
         options={{
-          // title: "new expense",
-          // // headerStyle: { backgroundColor: "#EDF76A" },
-          // // headerStyle: {
-          // //   backgroundColor: "rgb(216 180 254)"
-          // // },
-          // headerLeft: () => (
-          //   <Link href="../">
-          //     <EvilIcons name="close" size={24} color="black" />
-          //   </Link>
-          // ),
           headerRight: () => (
             <TouchableOpacity className="border border-black rounded-3xl p-1 bg-[#EDF76A]" onPress={handleSubmit}>
               <Ionicons name="checkmark" size={30} color="black" />
@@ -223,11 +214,21 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity className={openDetails ? "hidden" : "items-center p-5 border border-dashed border-black bg-[#FDF3FD]"} onPress={Keyboard.dismiss}>
-          <Foundation name="camera" size={40} color="black" />
-          <Text className="text-base">add receipt</Text>
-          <Text className="text-gray-500 text-xs">(optional)</Text>
+        <TouchableOpacity className={openDetails ? "hidden" : "items-center px-2 border border-dashed border-black bg-[#FDF3FD]"} onPress={openCamera}>
+          {image ? (
+            <View className="pt-2">
+              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+              <Button title="delete image" onPress={() => setImage("")} />
+            </View>
+          ) : (
+            <View className="items-center p-2">
+              <Foundation name="camera" size={40} color="black" />
+              <Text className="text-base">add receipt</Text>
+              <Text className="text-gray-500 text-xs">(optional)</Text>
+            </View>
+          )}
         </TouchableOpacity>
+        <Button title="or choose from gallery" onPress={pickImage} />
       </View>
     </View>
   );
