@@ -166,17 +166,56 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
         </View>
       </View>
 
-      <Link href="/add-expense/split-details" asChild>
-        <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg">
-          <Text>paid by you and split equally</Text>
-        </TouchableOpacity>
-      </Link>
+      <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg mt-10 mb-5" onPress={() => setOpenDetails(!openDetails)}>
+        {openDetails ? (
+          <Text>Go Back</Text>
+        ) : (
+          <Text>
+            paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
+          </Text>
+        )}
+      </TouchableOpacity>
 
       <TouchableOpacity className="items-center p-5 border border-dashed border-black bg-[#FDF3FD]" onPress={Keyboard.dismiss}>
         <Foundation name="camera" size={40} color="black" />
         <Text className="text-base">add receipt</Text>
         <Text className="text-gray-500 text-xs">(optional)</Text>
       </TouchableOpacity>
+
+      <View className={openDetails ? "grid items-center gap-y-5" : "hidden"}>
+        <View className="flex-row items-center gap-x-5">
+          <Text className="text-lg pb-1">paid by:</Text>
+          {/* {participants.length > 0 &&
+            participants.map((user: any) => (
+              <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
+                <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
+              </TouchableOpacity>
+            ))} */}
+        </View>
+
+        <View className="flex-row w-[60vw]">
+          <TouchableOpacity className={`flex-1 px-3 py-1 border border-r-[0.5px] ${splitMethod === "equally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "equally", percentage)}>
+            <Text className="text-base font-medium text-center">equally</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className={`flex-1 px-3 py-1 border border-l-[0.5px] ${splitMethod === "unequally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "unequally", Array(participants.length).fill(0))}>
+            <Text className="text-base font-medium text-center">unequally</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="w-[80vw] border rounded-3xl bg-white py-5 px-3">
+          {participants.map((user, index) => (
+            <View key={index} className="flex flex-row items-center px-2">
+              <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
+              <View className="w-1/3">
+                <TextInput className="w-20 border-b-2 text-center text-base pb-1" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
+              </View>
+              <View className="w-1/3 items-end">
+                <TextInput className="w-20 pb-1 text-base text-center" value={splitAmounts[index].toString()} />
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
     </View>
   );
 }

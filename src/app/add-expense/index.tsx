@@ -147,6 +147,7 @@ export default function AddExpenseModal() {
           <Text> first before adding an expense</Text>
         </View> */}
 
+        <Text>{JSON.stringify(users)}</Text>
         {isSelected ? <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={availableFriends} availableGroups={availableGroups} />}
       </View>
     </TouchableWithoutFeedback>
