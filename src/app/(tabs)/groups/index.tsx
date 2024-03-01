@@ -19,5 +19,5 @@ export default function IndexScreen() {
     });
   }, []);
 
-  return <View>{session && session.user ? <Groups key={session.user.id} session={session} /> : <Auth />}</View>;
+  return <View>{session && session.user ? <Groups key={session.user.id} /> : <Auth />}</View>;
 }
