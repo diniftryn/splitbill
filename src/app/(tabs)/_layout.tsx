@@ -1,8 +1,14 @@
-import { Link, Tabs } from "expo-router";
-import { Pressable, View } from "react-native";
+import { useAuth } from "@/src/providers/AuthProvider";
+import { Redirect, Tabs } from "expo-router";
 import { Text } from "tamagui";
 
 export default function TabLayout() {
+  const { session } = useAuth();
+
+  if (!session) {
+    return <Redirect href={"/"} />;
+  }
+
   return (
     <Tabs
       screenOptions={{
