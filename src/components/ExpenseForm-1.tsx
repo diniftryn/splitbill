@@ -146,37 +146,97 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   }
 
   return (
-    <View className="items-center gap-y-10 flex-1">
-      <View className="pt-10 w-[70vw] items-center">
-        <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
-          <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View className="bg-pink-200 flex-1 items-center gap-y-5 pt-10">
+        <Stack.Screen
+          options={{
+            title: "new expense",
+            headerStyle: { backgroundColor: "#EDF76A" },
+            // headerStyle: {
+            //   backgroundColor: "rgb(216 180 254)"
+            // },
+            headerLeft: () => (
+              <Link href="../">
+                <EvilIcons name="close" size={24} color="black" />
+              </Link>
+            ),
+            headerRight: () => <Button title="Submit" onPress={handleSubmit} />
+          }}
+        />
+
+        <View className={openDetails ? "hidden" : "grid items-center gap-y-5"}>
+          <TouchableOpacity className="px-2 pt-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
+            {image ? (
+              <View>
+                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+                <Button title="Delete Image" onPress={() => setImage("")} />
+              </View>
+            ) : (
+              <View className="items-center p-2">
+                <Foundation name="camera" size={40} color="black" />
+                <Text className="text-base">add receipt</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <Button title="Choose from gallery" onPress={pickImage} />
+
+          <View className="w-[70vw] items-center">
+            <View className="bg-[#EDF76A] w-full items-center rounded-t-xl border border-b-[0.5px] p-1">
+              <Text className="text-lg font-medium">{formatDate(new Date())}</Text>
+            </View>
+            <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
+              <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={description} onChangeText={setDescription} />
+              <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="$0.00" placeholderTextColor="gray" value={amount} onChangeText={value => calculateSplitAmounts(value, splitMethod, splitPercentage)} keyboardType="numeric" />
+            </View>
+          </View>
         </View>
-        <View className="bg-[#FDF3FD] rounded-b-xl border border-t-[0.5px] p-3 pt-0 w-full">
-          <TextInput className="border-b-[1px] text-lg text-black p-2" placeholder="expense description" placeholderTextColor="gray" value={description} onChangeText={text => setDescription(text)} />
-          <TextInput
-            className="border-b-[1px] text-lg text-black p-2"
-            placeholder="$0.00"
-            placeholderTextColor="gray"
-            value={amount}
-            onChangeText={text => {
-              setAmount(text);
-            }}
-            keyboardType="numeric"
-          />
+
+        {/* <Link href="/add-expense/split-details" asChild> */}
+        <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg" onPress={() => setOpenDetails(!openDetails)}>
+          {openDetails ? (
+            <Text>Go Back</Text>
+          ) : (
+            <Text>
+              paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
+            </Text>
+          )}
+        </TouchableOpacity>
+        {/* </Link> */}
+
+        <View className={openDetails ? "grid items-center gap-y-5" : "hidden"}>
+          <View className="flex-row items-center gap-x-5">
+            <Text className="text-lg pb-1">paid by:</Text>
+            {participants.map((user: any) => (
+              <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
+                <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View className="flex-row w-[60vw]">
+            <TouchableOpacity className={`flex-1 px-3 py-1 border border-r-[0.5px] ${splitMethod === "equally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "equally", percentage)}>
+              <Text className="text-base font-medium text-center">equally</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className={`flex-1 px-3 py-1 border border-l-[0.5px] ${splitMethod === "unequally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "unequally", Array(participants.length).fill(0))}>
+              <Text className="text-base font-medium text-center">unequally</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View className="w-[80vw] border rounded-3xl bg-white py-5 px-3">
+            {participants.map((user, index) => (
+              <View key={index} className="flex flex-row items-center px-2">
+                <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
+                <View className="w-1/3">
+                  <TextInput className="w-20 border-b-2 text-center text-base pb-1" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
+                </View>
+                <View className="w-1/3 items-end">
+                  <TextInput className="w-20 pb-1 text-base text-center" value={splitAmounts[index].toString()} />
+                </View>
+              </View>
+            ))}
+          </View>
         </View>
       </View>
-
-      <Link href="/add-expense/split-details" asChild>
-        <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg">
-          <Text>paid by you and split equally</Text>
-        </TouchableOpacity>
-      </Link>
-
-      <TouchableOpacity className="items-center p-5 border border-dashed border-black bg-[#FDF3FD]" onPress={Keyboard.dismiss}>
-        <Foundation name="camera" size={40} color="black" />
-        <Text className="text-base">add receipt</Text>
-        <Text className="text-gray-500 text-xs">(optional)</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
