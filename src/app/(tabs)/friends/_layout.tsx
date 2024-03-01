@@ -3,9 +3,9 @@ import { Redirect, Stack } from "expo-router";
 import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function FriendsLayout() {
-  const { session } = useAuth();
+  const { session, user } = useAuth();
 
-  if (!session) {
+  if (!session && !user) {
     return <Redirect href={"/"} />;
   }
 

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack } from "expo-router";
@@ -7,9 +7,11 @@ import { useAuth } from "@/src/providers/AuthProvider";
 import { supabase } from "@/src/lib/supabase";
 import ExpenseForm from "@/src/components/ExpenseForm";
 import ExpenseParticipants from "@/src/components/ExpenseParticipants";
+import { useFriendGroup, useFriendList } from "@/src/api/friends";
+import { useGroupList, useGroupUsers } from "@/src/api/groups";
 
 export default function AddExpenseModal() {
-  const { session, user } = useAuth();
+  const { user } = useAuth();
 
   const [selectedFriendOrGroup, setSelectedFriendOrGroup] = useState<User | Group | null>(null);
   const [isSelected, setIsSelected] = useState(false);
@@ -18,65 +20,42 @@ export default function AddExpenseModal() {
   let splitPercentage: number[] = [50, 50];
   let users: [User | null] | User[] = [user];
 
-  const [availableFriends, setAvailableFriends] = useState<User[]>([]);
-  const [availableGroups, setAvailableGroups] = useState<Group[]>([]);
+  const { data: friends, error: friendsError, isLoading: friendsIsLoading } = useFriendList();
+  const { data: groups, error: groupsError, isLoading: groupsIsLoading } = useGroupList();
+  if (friendsIsLoading || groupsIsLoading) return <ActivityIndicator />;
+  if (friendsError) return <Text>Failed to fetch friends</Text>;
+  if (groupsError) return <Text>Failed to fetch groups</Text>;
 
-  useEffect(() => {
-    getFriends();
-    getGroups();
-  }, [availableFriends, availableGroups]);
+  // if (user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
+  //   const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user.id, selectedFriendOrGroup.id);
+  //   if (friendGroupIsLoading) return <ActivityIndicator />;
+  //   if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
 
-  async function getFriends() {
-    try {
-      if (!session?.user) throw new Error("No user on the session!");
+  //   if (friendGroup) group = friendGroup[0] as Group;
+  //   users = [user, selectedFriendOrGroup] as User[];
+  // } else if (user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
+  //   group = selectedFriendOrGroup as Group;
+  //   const { data: groupUsers, error: groupUsersError, isLoading: groupUsersIsLoading } = useGroupUsers(group.userIds as string[]);
+  //   if (groupUsersIsLoading) return <ActivityIndicator />;
+  //   if (groupUsersError) return <Text>Failed to fetch group users</Text>;
 
-      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
-      if (error && status !== 406) {
-        throw error;
-      }
+  //   users = groupUsers as User[];
+  //   splitPercentage = Array(group.userIds.length).fill(100 / group.userIds.length);
+  // }
 
-      if (data) {
-        const { data: friends, error } = await supabase.from("users").select().in("email", data.friendsEmail);
-
-        if (error) throw error;
-        if (friends) setAvailableFriends(friends);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        return error.message;
-      }
-    }
-  }
-
-  async function getGroups() {
-    try {
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
-
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        const { data: groups, error } = await supabase.from("groups").select().in("id", data.groupIds);
-
-        if (error) throw error;
-        if (groups) setAvailableGroups(groups);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        return error.message;
-      }
-    }
-  }
-
-  async function getFriendGroup(groupId: string) {
-    const { data, error } = await supabase.from("groups").select().eq("id", groupId).eq("type", "friend");
+  async function getFriendGroup(userId: string | number, friendId: string | number) {
+    const { data, error } = await supabase
+      .from("groups")
+      .select()
+      .in("userIds", [
+        [userId, friendId],
+        [friendId, userId]
+      ])
+      .eq("type", "friend");
 
     if (error) console.log("Unable to fetch friend group. Error: " + error.message);
     if (data) group = data[0];
-    if (!data) group = { id: groupId, name: groupId, imageUrl: "", userIds: [session?.user.id as string, selectedFriendOrGroup?.id as string], expenseIds: [] };
+    if (!data) console.log("add person as friend first");
   }
 
   async function getUsers(groupUserIds: number[]) {
@@ -88,15 +67,15 @@ export default function AddExpenseModal() {
     }
   }
 
-  if (session?.user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
-    const groupId = session?.user.id < selectedFriendOrGroup.id ? session?.user.id + "-" + selectedFriendOrGroup?.id : selectedFriendOrGroup?.id + "-" + session?.user.id;
-    getFriendGroup(groupId);
+  if (user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
+    getFriendGroup(user.id, selectedFriendOrGroup.id);
     users = [user, selectedFriendOrGroup] as User[];
-  } else if (session?.user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
+  } else if (user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
     group = selectedFriendOrGroup as Group;
     getUsers(group.userIds as number[]);
     splitPercentage = Array(group.userIds.length).fill(100 / group.userIds.length);
   }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="items-center gap-y-10 flex-1 bg-pink-200">
@@ -142,7 +121,7 @@ export default function AddExpenseModal() {
           <Text> first before adding an expense</Text>
         </View> */}
 
-        {isSelected ? <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={availableFriends} availableGroups={availableGroups} />}
+        {isSelected ? <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={friends} availableGroups={groups} />}
       </View>
     </TouchableWithoutFeedback>
   );

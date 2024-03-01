@@ -21,3 +21,16 @@ export const useGroupList = () => {
     }
   });
 };
+
+export const useGroupUsers = (groupUserIds: string[] | number[]) => {
+  return useQuery({
+    queryKey: ["groupUsers"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("users").select("*").in("id", groupUserIds);
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    }
+  });
+};

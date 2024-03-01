@@ -214,21 +214,23 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity className={openDetails ? "hidden" : "items-center px-2 border border-dashed border-black bg-[#FDF3FD]"} onPress={openCamera}>
-          {image ? (
-            <View className="pt-2">
-              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-              <Button title="delete image" onPress={() => setImage("")} />
-            </View>
-          ) : (
-            <View className="items-center p-2">
-              <Foundation name="camera" size={40} color="black" />
-              <Text className="text-base">add receipt</Text>
-              <Text className="text-gray-500 text-xs">(optional)</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-        <Button title="or choose from gallery" onPress={pickImage} />
+        <View className={openDetails ? "hidden" : "block"}>
+          <TouchableOpacity className="items-center px-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
+            {image ? (
+              <View className="pt-2">
+                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+                <Button title="delete image" onPress={() => setImage("")} />
+              </View>
+            ) : (
+              <View className="items-center p-2">
+                <Foundation name="camera" size={40} color="black" />
+                <Text className="text-base">add receipt</Text>
+                <Text className="text-gray-500 text-xs">(optional)</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <Button title="or choose from gallery" onPress={pickImage} />
+        </View>
       </View>
     </View>
   );
