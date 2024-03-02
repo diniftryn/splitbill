@@ -3,6 +3,7 @@ type User = {
   username: string;
   friendIds: string[] | null;
   groupIds: string[] | null;
+  friendsEmail: string[] | null;
 };
 
 type Group = {

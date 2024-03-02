@@ -1,23 +1,17 @@
-import "react-native-url-polyfill/auto";
-import { useState, useEffect } from "react";
-import { supabase } from "../../../lib/supabase";
-import Auth from "../../../components/Auth";
-import { View } from "react-native";
-import { Session } from "@supabase/supabase-js";
+import { ActivityIndicator, Text } from "react-native";
 import Groups from "@/src/components/Groups";
+import { useGroupList } from "@/src/api/groups";
 
 export default function IndexScreen() {
-  const [session, setSession] = useState<Session | null>(null);
+  const { data: groups, error, isLoading } = useGroupList();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+  if (error) {
+    return <Text>Failed to fetch groups</Text>;
+  }
 
-  return <View>{session && session.user ? <Groups key={session.user.id} session={session} /> : <Auth />}</View>;
+  return <Groups groups={groups as Group[]} />;
 }

@@ -1,6 +1,7 @@
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, Button } from "react-native";
 import { Stack } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { supabase } from "@/src/lib/supabase";
 
 export default function SettingsScreen() {
   return (
@@ -21,11 +22,13 @@ export default function SettingsScreen() {
         </View>
         <View className="w-full border border-t-[0.5px] rounded-b-3xl py-5 flex justify-center items-center bg-white">
           <Image source={require("@/assets/images/clouds1.jpeg")} className="w-[90px] h-[90px] border rounded-full mb-5" />
-          <View className="bg-pink-200 w-3/4 flex items-center pb-3">
+          <View className="bg-pink-200 w-3/4 flex items-center pb-3 mb-3">
             <TextInput className="text-lg font-medium pb-2" value="Dini F" />
             <TextInput className=" font-normal" value="9999 1234" />
             <TextInput className="font-normal" value="name@email.com" />
           </View>
+
+          <Button title="Logout" onPress={async () => await supabase.auth.signOut()} />
         </View>
       </View>
     </View>

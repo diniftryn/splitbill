@@ -1,22 +1,21 @@
+import { Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import Expenses from "@/src/components/Expenses";
-import { supabase } from "@/src/lib/supabase";
-import { useEffect, useState } from "react";
+import { useGroupExpensesList } from "@/src/api/expenses";
+import { ActivityIndicator } from "react-native";
 
 export default function GroupsExpensesScreen() {
   const { name, groupId } = useLocalSearchParams();
-  const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  async function getExpenses() {
-    const { data, error } = await supabase.from("expenses").select().eq("groupId", groupId);
-    if (!error) {
-      setExpenses(data);
-    }
+  const { data: groupExpenses, error, isLoading } = useGroupExpensesList(groupId as string);
+
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
 
-  useEffect(() => {
-    getExpenses();
-  }, [expenses]);
+  if (error) {
+    return <Text>Failed to fetch group expenses</Text>;
+  }
 
-  return <Expenses expenses={expenses} name={name as string} path="groups" />;
+  return <Expenses expenses={groupExpenses as Expense[]} name={name as string} path="groups" />;
 }

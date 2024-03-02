@@ -1,46 +1,9 @@
-import { View, FlatList, Pressable, Alert, Text } from "react-native";
-// import { groups } from "@/constants/Data";
+import { View, FlatList, Pressable, Text } from "react-native";
 import GroupsListItem from "./GroupsListItem";
 import { Link, Stack } from "expo-router";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Session } from "@supabase/supabase-js";
-import { useState, useEffect } from "react";
-import { supabase } from "../lib/supabase";
 
-export default function Groups({ session }: { session: Session }) {
-  const [loading, setLoading] = useState(false);
-  const [groups, setGroups] = useState<{ name: string }[]>([]);
-
-  useEffect(() => {
-    if (session) getGroups();
-  }, [session]);
-
-  async function getGroups() {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
-
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        const { data: groups, error } = await supabase.from("groups").select().in("id", data.groupIds);
-
-        if (error) throw error;
-        if (groups) setGroups(groups);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function Groups({ groups }: { groups: Group[] }) {
   return (
     <View className="bg-purple-300 min-h-full">
       <Stack.Screen

@@ -9,13 +9,13 @@ import * as FileSystem from "expo-file-system";
 import { randomUUID } from "expo-crypto";
 import { decode } from "base64-arraybuffer";
 
-export default function ExpenseForm({ participants, group, percentage }: { participants: User[]; group: Group; percentage: number[] }) {
+export default function ExpenseForm({ userId, participants, group, percentage, initialSplitAmt }: { userId: string; participants: User[]; group: Group; percentage: number[]; initialSplitAmt: number[] }) {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
-  const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
-  const [payerId, setPayerId] = useState(participants[0].id);
+  const [splitAmounts, setSplitAmounts] = useState<number[]>(initialSplitAmt);
+  const [payerId, setPayerId] = useState(userId);
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -214,21 +214,23 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity className={openDetails ? "hidden" : "items-center px-2 border border-dashed border-black bg-[#FDF3FD]"} onPress={openCamera}>
-          {image ? (
-            <View className="pt-2">
-              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-              <Button title="delete image" onPress={() => setImage("")} />
-            </View>
-          ) : (
-            <View className="items-center p-2">
-              <Foundation name="camera" size={40} color="black" />
-              <Text className="text-base">add receipt</Text>
-              <Text className="text-gray-500 text-xs">(optional)</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-        <Button title="or choose from gallery" onPress={pickImage} />
+        <View className={openDetails ? "hidden" : "block"}>
+          <TouchableOpacity className="items-center px-2 border border-dashed border-black bg-[#FDF3FD]" onPress={openCamera}>
+            {image ? (
+              <View className="pt-2">
+                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+                <Button title="delete image" onPress={() => setImage("")} />
+              </View>
+            ) : (
+              <View className="items-center p-2">
+                <Foundation name="camera" size={40} color="black" />
+                <Text className="text-base">add receipt</Text>
+                <Text className="text-gray-500 text-xs">(optional)</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <Button title="or choose from gallery" onPress={pickImage} />
+        </View>
       </View>
     </View>
   );
