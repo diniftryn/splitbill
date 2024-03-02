@@ -1,4 +1,4 @@
-import { View, Text, Button, GestureResponderEvent, Alert, TouchableOpacity, Image, TextInput, ActivityIndicator } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Alert, TouchableOpacity, Image, TextInput } from "react-native";
 import React, { useState } from "react";
 import { supabase } from "@/src/lib/supabase";
 import { Stack, router } from "expo-router";
@@ -9,43 +9,14 @@ import * as FileSystem from "expo-file-system";
 import { randomUUID } from "expo-crypto";
 import { decode } from "base64-arraybuffer";
 import ExpenseSplitDetails from "./ExpenseSplitDetails";
-import { useFriendGroup } from "../api/friends";
-import { useGroupUsers } from "../api/groups";
 
-export default function ExpenseForm({ user, selectedFriendOrGroup }: { user: User; selectedFriendOrGroup: User | Group }) {
-  let percentage = [50, 50];
-  let initialSplitAmt = [0, 0];
-  let numberOfParticipants = 2;
-  let participants = [user];
-  let group: Group = { id: "", name: "", imageUrl: "", userIds: [], expenseIds: [] };
-
-  if ((selectedFriendOrGroup as User).username) {
-    const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user?.id as string, selectedFriendOrGroup?.id as string);
-    if (friendGroupIsLoading) return <ActivityIndicator />;
-    if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
-
-    if (friendGroup) group = friendGroup[0];
-    participants = [user, selectedFriendOrGroup as User];
-  }
-
-  if ((selectedFriendOrGroup as Group).name) {
-    const { data: groupUsers, error: groupUsersError, isLoading: groupUsersIsLoading } = useGroupUsers((selectedFriendOrGroup as Group).userIds as string[]);
-    if (groupUsersIsLoading) return <ActivityIndicator />;
-    if (groupUsersError) return <Text>Failed to fetch group users</Text>;
-
-    group = selectedFriendOrGroup as Group;
-    participants = groupUsers as User[];
-    numberOfParticipants = (selectedFriendOrGroup as Group).userIds.length;
-    percentage = Array(numberOfParticipants).fill(100 / numberOfParticipants);
-    initialSplitAmt = Array(numberOfParticipants).fill(0);
-  }
-
+export default function ExpenseForm({ userId, participants, group, percentage, initialSplitAmt }: { userId: string; participants: User[]; group: Group; percentage: number[]; initialSplitAmt: number[] }) {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
   const [splitAmounts, setSplitAmounts] = useState<number[]>(initialSplitAmt);
-  const [payerId, setPayerId] = useState(user.id);
+  const [payerId, setPayerId] = useState(userId);
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -121,7 +92,7 @@ export default function ExpenseForm({ user, selectedFriendOrGroup }: { user: Use
   function calculateSplitAmounts(amount: string, method: string, percentage: number[]) {
     const splitAmounts = [];
 
-    for (let i = 0; i < numberOfParticipants; i++) {
+    for (let i = 0; i < participants.length; i++) {
       splitAmounts[i] = (percentage[i] / 100) * parseFloat(amount);
     }
     setAmount(amount);
@@ -143,7 +114,7 @@ export default function ExpenseForm({ user, selectedFriendOrGroup }: { user: Use
 
     if (dataExpense) {
       let submitParticipants = [];
-      for (let i = 0; i < numberOfParticipants; i++) {
+      for (let i = 0; i < participants.length; i++) {
         submitParticipants.push({ expenseId: dataExpense[0].id, userId: participants[i].id, shareAmount: splitAmounts[i] });
       }
       const { data: dataParticipant, error: errorParticipant } = await supabase.from("participants").insert(submitParticipants).select();

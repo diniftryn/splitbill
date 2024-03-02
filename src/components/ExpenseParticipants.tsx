@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import React from "react";
 
-export default function ExpenseParticipants({ setSelectedFriendOrGroup, setIsSelected, availableFriends, availableGroups }: any) {
+export default function ExpenseParticipants({ setSelectedFriendOrGroup, setIsSelected, setSelectedType, availableFriends, availableGroups }: any) {
   return (
     <View className="w-full">
       <View className="px-5 py-2">
@@ -15,6 +15,7 @@ export default function ExpenseParticipants({ setSelectedFriendOrGroup, setIsSel
               onPress={() => {
                 setSelectedFriendOrGroup(item);
                 setIsSelected(true);
+                setSelectedType("friend");
               }}
             >
               <Text className="text-base">{item.username}</Text>
@@ -36,6 +37,7 @@ export default function ExpenseParticipants({ setSelectedFriendOrGroup, setIsSel
               onPress={() => {
                 setSelectedFriendOrGroup(item);
                 setIsSelected(true);
+                setSelectedType("group");
               }}
             >
               <Text className="text-base">{item.name}</Text>

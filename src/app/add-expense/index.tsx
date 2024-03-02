@@ -9,12 +9,15 @@ import ExpenseForm from "@/src/components/ExpenseForm";
 import ExpenseParticipants from "@/src/components/ExpenseParticipants";
 import { useFriendGroup, useFriendList } from "@/src/api/friends";
 import { useGroupList, useGroupUsers } from "@/src/api/groups";
+import ExpenseFormFriend from "@/src/components/ExpenseFormFriend";
+import ExpenseFormGroup from "@/src/components/ExpenseFormGroup";
 
 export default function AddExpenseModal() {
   const { user } = useAuth();
 
   const [selectedFriendOrGroup, setSelectedFriendOrGroup] = useState<User | Group | null>(null);
   const [isSelected, setIsSelected] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
 
   let group: Group = { id: "", name: "", imageUrl: "", userIds: [], expenseIds: [] };
   let splitPercentage: number[] = [50, 50];
@@ -100,6 +103,7 @@ export default function AddExpenseModal() {
             onPress={() => {
               setSelectedFriendOrGroup(null);
               setIsSelected(false);
+              setSelectedType("");
             }}
           >
             {selectedFriendOrGroup ? (
@@ -121,7 +125,7 @@ export default function AddExpenseModal() {
           <Text> first before adding an expense</Text>
         </View> */}
 
-        {isSelected && selectedFriendOrGroup && user ? <ExpenseForm user={user} selectedFriendOrGroup={selectedFriendOrGroup} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={friends} availableGroups={groups} />}
+        {isSelected && selectedFriendOrGroup && user ? selectedType === "friend" ? <ExpenseFormFriend user={user} selectedFriendOrGroup={selectedFriendOrGroup as User} /> : <ExpenseFormGroup user={user} selectedFriendOrGroup={selectedFriendOrGroup as Group} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} setSelectedType={setSelectedType} availableFriends={friends} availableGroups={groups} />}
       </View>
     </TouchableWithoutFeedback>
   );
