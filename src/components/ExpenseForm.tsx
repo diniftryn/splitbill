@@ -1,21 +1,51 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image, TextInput, SafeAreaView } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Alert, TouchableOpacity, Image, TextInput, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
 import { supabase } from "@/src/lib/supabase";
-import { Link, Stack, router } from "expo-router";
-import { EvilIcons, Foundation, Ionicons } from "@expo/vector-icons";
+import { Stack, router } from "expo-router";
+import { Foundation, Ionicons } from "@expo/vector-icons";
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { randomUUID } from "expo-crypto";
 import { decode } from "base64-arraybuffer";
+import ExpenseSplitDetails from "./ExpenseSplitDetails";
+import { useFriendGroup } from "../api/friends";
+import { useGroupUsers } from "../api/groups";
 
-export default function ExpenseForm({ participants, group, percentage }: { participants: User[]; group: Group; percentage: number[] }) {
+export default function ExpenseForm({ user, selectedFriendOrGroup }: { user: User; selectedFriendOrGroup: User | Group }) {
+  let percentage = [50, 50];
+  let initialSplitAmt = [0, 0];
+  let numberOfParticipants = 2;
+  let participants = [user];
+  let group: Group = { id: "", name: "", imageUrl: "", userIds: [], expenseIds: [] };
+
+  if ((selectedFriendOrGroup as User).username) {
+    const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user?.id as string, selectedFriendOrGroup?.id as string);
+    if (friendGroupIsLoading) return <ActivityIndicator />;
+    if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
+
+    if (friendGroup) group = friendGroup[0];
+    participants = [user, selectedFriendOrGroup as User];
+  }
+
+  if ((selectedFriendOrGroup as Group).name) {
+    const { data: groupUsers, error: groupUsersError, isLoading: groupUsersIsLoading } = useGroupUsers((selectedFriendOrGroup as Group).userIds as string[]);
+    if (groupUsersIsLoading) return <ActivityIndicator />;
+    if (groupUsersError) return <Text>Failed to fetch group users</Text>;
+
+    group = selectedFriendOrGroup as Group;
+    participants = groupUsers as User[];
+    numberOfParticipants = (selectedFriendOrGroup as Group).userIds.length;
+    percentage = Array(numberOfParticipants).fill(100 / numberOfParticipants);
+    initialSplitAmt = Array(numberOfParticipants).fill(0);
+  }
+
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
-  const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
-  const [payerId, setPayerId] = useState(participants[0].id);
+  const [splitAmounts, setSplitAmounts] = useState<number[]>(initialSplitAmt);
+  const [payerId, setPayerId] = useState(user.id);
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
@@ -91,22 +121,13 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
   function calculateSplitAmounts(amount: string, method: string, percentage: number[]) {
     const splitAmounts = [];
 
-    for (let i = 0; i < participants.length; i++) {
+    for (let i = 0; i < numberOfParticipants; i++) {
       splitAmounts[i] = (percentage[i] / 100) * parseFloat(amount);
     }
     setAmount(amount);
     setSplitMethod(method);
     setSplitPercentage(percentage);
     setSplitAmounts(splitAmounts);
-  }
-
-  function handleSplitPercentageChange(value: string, index: number) {
-    const newPercentage = [...splitPercentage];
-    newPercentage[index] = parseInt(value);
-    setSplitPercentage(newPercentage);
-    const newSplitAmounts = [...splitAmounts];
-    newSplitAmounts[index] = (parseInt(value) / 100) * parseFloat(amount);
-    setSplitAmounts(newSplitAmounts);
   }
 
   async function handleSubmit(event: GestureResponderEvent) {
@@ -122,7 +143,7 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
 
     if (dataExpense) {
       let submitParticipants = [];
-      for (let i = 0; i < participants.length; i++) {
+      for (let i = 0; i < numberOfParticipants; i++) {
         submitParticipants.push({ expenseId: dataExpense[0].id, userId: participants[i].id, shareAmount: splitAmounts[i] });
       }
       const { data: dataParticipant, error: errorParticipant } = await supabase.from("participants").insert(submitParticipants).select();
@@ -169,41 +190,6 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           </View>
         </View>
 
-        <View className={openDetails ? "grid items-center gap-y-5" : "hidden"}>
-          <View className="flex-row items-center gap-x-5">
-            <Text className="text-lg pb-1">paid by:</Text>
-            {participants.length > 0 &&
-              participants.map((user: any) => (
-                <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
-                  <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
-                </TouchableOpacity>
-              ))}
-          </View>
-
-          <View className="flex-row w-[60vw]">
-            <TouchableOpacity className={`flex-1 px-3 py-1 border border-r-[0.5px] ${splitMethod === "equally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "equally", percentage)}>
-              <Text className="text-base font-medium text-center">equally</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className={`flex-1 px-3 py-1 border border-l-[0.5px] ${splitMethod === "unequally" && "bg-purple-300"}`} onPress={() => calculateSplitAmounts(amount, "unequally", Array(participants.length).fill(0))}>
-              <Text className="text-base font-medium text-center">unequally</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View className="w-[80vw] border rounded-3xl bg-white py-5 px-3">
-            {participants.map((user, index) => (
-              <View key={index} className="flex flex-row items-center px-2">
-                <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
-                <View className="w-1/3">
-                  <TextInput className="w-20 border-b-2 text-center text-base pb-1" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
-                </View>
-                <View className="w-1/3 items-end">
-                  <TextInput className="w-20 pb-1 text-base text-center" value={splitAmounts[index].toString()} />
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-
         <TouchableOpacity className="py-2 px-5 border bg-purple-300 shadow-lg mt-10 mb-5" onPress={() => setOpenDetails(!openDetails)}>
           {openDetails ? (
             <Text>Go Back</Text>
@@ -231,6 +217,8 @@ export default function ExpenseForm({ participants, group, percentage }: { parti
           </TouchableOpacity>
           <Button title="or choose from gallery" onPress={pickImage} />
         </View>
+
+        {openDetails && <ExpenseSplitDetails participants={participants} amount={amount} percentage={percentage} splitPercentage={splitPercentage} setSplitPercentage={setSplitPercentage} splitAmounts={splitAmounts} setSplitAmounts={setSplitAmounts} splitMethod={splitMethod} payerId={payerId} setPayerId={setPayerId} calculateSplitAmounts={calculateSplitAmounts} />}
       </View>
     </View>
   );

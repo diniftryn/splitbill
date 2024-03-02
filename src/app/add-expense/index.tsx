@@ -121,7 +121,7 @@ export default function AddExpenseModal() {
           <Text> first before adding an expense</Text>
         </View> */}
 
-        {isSelected ? <ExpenseForm participants={users as User[]} group={group} percentage={splitPercentage} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={friends} availableGroups={groups} />}
+        {isSelected && selectedFriendOrGroup && user ? <ExpenseForm user={user} selectedFriendOrGroup={selectedFriendOrGroup} /> : <ExpenseParticipants setSelectedFriendOrGroup={setSelectedFriendOrGroup} setIsSelected={setIsSelected} availableFriends={friends} availableGroups={groups} />}
       </View>
     </TouchableWithoutFeedback>
   );
