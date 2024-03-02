@@ -30,14 +30,7 @@ export const useFriendGroup = (userId: string | number, friendId: string | numbe
   return useQuery({
     queryKey: ["friendGroup"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("groups")
-        .select("*")
-        .in("userIds", [
-          [userId, friendId],
-          [friendId, userId]
-        ])
-        .eq("type", "friend");
+      const { data, error } = await supabase.from("groups").select("*").contains("userIds", [userId, friendId]).eq("type", "friend");
       if (error) {
         throw new Error(error.message);
       }

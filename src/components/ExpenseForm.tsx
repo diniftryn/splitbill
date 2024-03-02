@@ -9,13 +9,13 @@ import * as FileSystem from "expo-file-system";
 import { randomUUID } from "expo-crypto";
 import { decode } from "base64-arraybuffer";
 
-export default function ExpenseForm({ participants, group, percentage }: { participants: User[]; group: Group; percentage: number[] }) {
+export default function ExpenseForm({ userId, participants, group, percentage, initialSplitAmt }: { userId: string; participants: User[]; group: Group; percentage: number[]; initialSplitAmt: number[] }) {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [splitMethod, setSplitMethod] = useState("equally");
-  const [splitAmounts, setSplitAmounts] = useState<number[]>([0, 0]);
-  const [payerId, setPayerId] = useState(participants[0].id);
+  const [splitAmounts, setSplitAmounts] = useState<number[]>(initialSplitAmt);
+  const [payerId, setPayerId] = useState(userId);
   const [splitPercentage, setSplitPercentage] = useState<number[]>(percentage);
 
   const [openDetails, setOpenDetails] = useState(false);
