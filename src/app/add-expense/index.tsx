@@ -26,55 +26,55 @@ export default function AddExpenseModal() {
   if (friendsError) return <Text>Failed to fetch friends</Text>;
   if (groupsError) return <Text>Failed to fetch groups</Text>;
 
-  // if (user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
-  //   const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user.id, selectedFriendOrGroup.id);
-  //   if (friendGroupIsLoading) return <ActivityIndicator />;
-  //   if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
+  // const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user?.id as string, selectedFriendOrGroup?.id as string);
+  // if (friendGroupIsLoading) return <ActivityIndicator />;
+  // if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
 
-  //   if (friendGroup) group = friendGroup[0] as Group;
+  // const { data: groupUsers, error: groupUsersError, isLoading: groupUsersIsLoading } = useGroupUsers(group.userIds as string[]);
+  // if (groupUsersIsLoading) return <ActivityIndicator />;
+  // if (groupUsersError) return <Text>Failed to fetch group users</Text>;
+
+  // if (friendGroup && (selectedFriendOrGroup as User).username) {
+  //   if (friendGroup.length > 0) group = friendGroup[0] as Group;
   //   users = [user, selectedFriendOrGroup] as User[];
-  // } else if (user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
+  // } else if (groupUsers && (selectedFriendOrGroup as Group).name) {
   //   group = selectedFriendOrGroup as Group;
-  //   const { data: groupUsers, error: groupUsersError, isLoading: groupUsersIsLoading } = useGroupUsers(group.userIds as string[]);
-  //   if (groupUsersIsLoading) return <ActivityIndicator />;
-  //   if (groupUsersError) return <Text>Failed to fetch group users</Text>;
-
   //   users = groupUsers as User[];
   //   splitPercentage = Array(group.userIds.length).fill(100 / group.userIds.length);
   // }
 
-  async function getFriendGroup(userId: string | number, friendId: string | number) {
-    const { data, error } = await supabase
-      .from("groups")
-      .select()
-      .in("userIds", [
-        [userId, friendId],
-        [friendId, userId]
-      ])
-      .eq("type", "friend");
+  // async function getFriendGroup(userId: string | number, friendId: string | number) {
+  //   const { data, error } = await supabase
+  //     .from("groups")
+  //     .select()
+  //     .in("userIds", [
+  //       [userId, friendId],
+  //       [friendId, userId]
+  //     ])
+  //     .eq("type", "friend");
 
-    if (error) console.log("Unable to fetch friend group. Error: " + error.message);
-    if (data) group = data[0];
-    if (!data) console.log("add person as friend first");
-  }
+  //   if (error) console.log("Unable to fetch friend group. Error: " + error.message);
+  //   if (data) group = data[0];
+  //   if (!data) console.log("add person as friend first");
+  // }
 
-  async function getUsers(groupUserIds: number[]) {
-    const { data: groupUsers, error } = await supabase.from("users").select().in("id", groupUserIds);
-    if (error) console.log("Unable to fetch group users. Error: " + error.message);
-    if (groupUsers) {
-      console.log("groupUsers: " + JSON.stringify(groupUsers));
-      users = groupUsers as User[];
-    }
-  }
+  // async function getUsers(groupUserIds: number[]) {
+  //   const { data: groupUsers, error } = await supabase.from("users").select().in("id", groupUserIds);
+  //   if (error) console.log("Unable to fetch group users. Error: " + error.message);
+  //   if (groupUsers) {
+  //     console.log("groupUsers: " + JSON.stringify(groupUsers));
+  //     users = groupUsers as User[];
+  //   }
+  // }
 
-  if (user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
-    getFriendGroup(user.id, selectedFriendOrGroup.id);
-    users = [user, selectedFriendOrGroup] as User[];
-  } else if (user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
-    group = selectedFriendOrGroup as Group;
-    getUsers(group.userIds as number[]);
-    splitPercentage = Array(group.userIds.length).fill(100 / group.userIds.length);
-  }
+  // if (user && selectedFriendOrGroup && (selectedFriendOrGroup as User).username) {
+  //   getFriendGroup(user.id, selectedFriendOrGroup.id);
+  //   users = [user, selectedFriendOrGroup] as User[];
+  // } else if (user && selectedFriendOrGroup && (selectedFriendOrGroup as Group).name) {
+  //   group = selectedFriendOrGroup as Group;
+  //   getUsers(group.userIds as number[]);
+  //   splitPercentage = Array(group.userIds.length).fill(100 / group.userIds.length);
+  // }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
