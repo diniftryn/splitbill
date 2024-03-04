@@ -24,6 +24,9 @@ export default function Friends({ friends }: { friends: User[] }) {
           )
         }}
       />
+      {/* <Text>
+        friends here: {JSON.stringify(friends)} {typeof friends}
+      </Text> */}
       {friends.length == 0 ? (
         <View className="min-h-full flex justify-center">
           <Text className="text-center text-base">No friends added yet.</Text>
