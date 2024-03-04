@@ -6,15 +6,27 @@ import { supabase } from "@/src/lib/supabase";
 import { Button } from "react-native-paper";
 
 export default function SignUpScreen() {
+  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function signUpWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      phone,
+      options: {
+        data: {
+          username
+        }
+      }
+    });
 
     if (error) Alert.alert(error.message);
+    else Alert.alert("Please check your email and authenticate your account.");
     setLoading(false);
   }
 
@@ -30,6 +42,12 @@ export default function SignUpScreen() {
             }
           }}
         />
+
+        <Text style={styles.label}>Phone</Text>
+        <TextInput value={phone} onChangeText={setPhone} placeholder="9000 0000" placeholderTextColor="gray" style={styles.input} keyboardType="numeric" />
+
+        <Text style={styles.label}>Username</Text>
+        <TextInput value={username} onChangeText={setUsername} placeholder="Taylor Swift" placeholderTextColor="gray" style={styles.input} />
 
         <Text style={styles.label}>Email</Text>
         <TextInput value={email} onChangeText={setEmail} placeholder="your-email@gmail.com" placeholderTextColor="gray" style={styles.input} />

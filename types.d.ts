@@ -1,9 +1,9 @@
 type User = {
   id: string | number;
   username: string;
-  friendIds: string[] | null;
+  phone: string;
+  friends_phone: string[] | null;
   groupIds: string[] | null;
-  friendsEmail: string[] | null;
 };
 
 type Group = {
