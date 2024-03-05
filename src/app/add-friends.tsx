@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, GestureResponderEvent, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,7 +34,10 @@ export default function AddFriendsScreen() {
 
   async function handleAddFriend(phone: string) {
     console.log(user);
-    const friendPhonesToUpdate = user?.friends_phone ? [...user.friends_phone, phone] : [phone];
+
+    if (user?.friends_phone && user?.friends_phone.includes(phone)) return Alert.alert("already in friend's list", " add other friends?");
+
+    const friendPhonesToUpdate = user?.friends_phone ? !user?.friends_phone.includes(phone) && [...user.friends_phone, phone] : [phone];
 
     const { data: dataUpdateFriends, error } = await supabase.from("users").update({ friends_phone: friendPhonesToUpdate }).eq("id", user?.id).select();
     if (error) alert("Error: " + error.message);
@@ -57,27 +60,31 @@ export default function AddFriendsScreen() {
           // )
         }}
       />
-      <TouchableOpacity className="flex flex-row items-center gap-x-2 py-2 pl-2 border-b">
-        <Ionicons name="add" size={20} color="black" />
-        <Text className="text-base">add friend if their name does not appear below</Text>
-      </TouchableOpacity>
 
       {/* <View className="bg-white m-2 border rounded-3xl p-2 flex-row items-center">
         <Ionicons name="search" size={20} color="black" />
         <Text className="pl-1">search friends from contacts list</Text>
       </View> */}
 
-      <ScrollView className="px-3">
-        <Text>
-          {user?.friends_phone} {user?.phone} {JSON.stringify(user)}
-        </Text>
-        {contacts &&
-          contacts.map(contact => (
-            <TouchableOpacity key={contact.id} onPress={() => handleAddFriend(contact.phone as string)} className="py-2">
-              <Text className="text-base">{contact.username}</Text>
-              <Text className="text-sm text-gray-400">{contact.phone}</Text>
-            </TouchableOpacity>
-          ))}
+      <ScrollView>
+        <View className="px-3">
+          <Text className="py-2">From your contacts who are already on the app</Text>
+          {contacts &&
+            contacts
+              .sort((a, b) => a.username.localeCompare(b.username))
+              .map(contact => (
+                <View className="border-b border-b-gray-200">
+                  <TouchableOpacity key={contact.id} onPress={() => handleAddFriend(contact.phone as string)} className="py-2">
+                    <Text className="text-base">{contact.username}</Text>
+                    <Text className="text-sm text-gray-400">{contact.phone}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+        </View>
+
+        <TouchableOpacity className="flex flex-row justify-center gap-x-2 py-2 bg-white mt-5">
+          <Text className="text-base">can't find your friends? send an invite</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
