@@ -32,7 +32,7 @@ export default function AddFriendsScreen() {
     })();
   }, []);
 
-  async function handleAddFriend(phone: string) {
+  async function handleAddFriend(phone: string, friendId: string) {
     console.log(user);
 
     if (user?.friends_phone && user?.friends_phone.includes(phone)) return Alert.alert("already in friend's list", " add other friends?");
@@ -40,8 +40,13 @@ export default function AddFriendsScreen() {
     const friendPhonesToUpdate = user?.friends_phone ? !user?.friends_phone.includes(phone) && [...user.friends_phone, phone] : [phone];
 
     const { data: dataUpdateFriends, error } = await supabase.from("users").update({ friends_phone: friendPhonesToUpdate }).eq("id", user?.id).select();
-    if (error) alert("Error: " + error.message);
-    if (dataUpdateFriends) {
+
+    const dataFriendGroup = { name: "friend", imageUrl: "", userIds: [user?.id, friendId], expenseIds: [], type: "friend" };
+    console.log(dataFriendGroup);
+    const { data: dataCreateFriendGroup, error: errorCreateFriendGroup } = await supabase.from("groups").insert(dataFriendGroup).select();
+
+    if (error || errorCreateFriendGroup) alert("Error: " + error?.message + errorCreateFriendGroup?.message);
+    if (dataUpdateFriends && dataCreateFriendGroup) {
       Alert.alert("friend added");
       router.push("/");
     }
@@ -74,7 +79,7 @@ export default function AddFriendsScreen() {
               .sort((a, b) => a.username.localeCompare(b.username))
               .map(contact => (
                 <View className="border-b border-b-gray-200" key={contact.id}>
-                  <TouchableOpacity onPress={() => handleAddFriend(contact.phone as string)} className="py-2">
+                  <TouchableOpacity onPress={() => handleAddFriend(contact.phone as string, contact.id as string)} className="py-2">
                     <Text className="text-base">{contact.username}</Text>
                     <Text className="text-sm text-gray-400">{contact.phone}</Text>
                   </TouchableOpacity>

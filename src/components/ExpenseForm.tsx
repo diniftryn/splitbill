@@ -1,4 +1,4 @@
-import { View, Text, Button, GestureResponderEvent, Keyboard, Alert, TouchableWithoutFeedback, TouchableOpacity, Image, TextInput, SafeAreaView } from "react-native";
+import { View, Text, Button, GestureResponderEvent, Alert, TouchableOpacity, Image, TextInput } from "react-native";
 import React, { useState } from "react";
 import { supabase } from "@/src/lib/supabase";
 import { Link, Stack, router } from "expo-router";
@@ -175,7 +175,7 @@ export default function ExpenseForm({ userId, participants, group, percentage, i
             {participants.length > 0 &&
               participants.map((user: any) => (
                 <TouchableOpacity key={user.id} onPress={() => setPayerId(user.id)} className={`py-1 border rounded-3xl px-4 ${payerId === user.id && "bg-purple-300"}`}>
-                  <Text className="text-lg">{user.id == "1" ? "you" : user.username}</Text>
+                  <Text className="text-lg">{user.id == userId ? "you" : user.username}</Text>
                 </TouchableOpacity>
               ))}
           </View>
@@ -192,7 +192,7 @@ export default function ExpenseForm({ userId, participants, group, percentage, i
           <View className="w-[80vw] border rounded-3xl bg-white py-5 px-3">
             {participants.map((user, index) => (
               <View key={index} className="flex flex-row items-center px-2">
-                <Text className="w-1/3 text-lg">{user.id == "1" ? "you" : user.username}</Text>
+                <Text className="w-1/3 text-lg">{user.id == userId ? "you" : user.username}</Text>
                 <View className="w-1/3">
                   <TextInput className="w-20 border-b-2 text-center text-base pb-1" value={splitPercentage[index].toString()} onChangeText={value => handleSplitPercentageChange(value, index)} keyboardType="numeric" />
                 </View>
@@ -209,7 +209,7 @@ export default function ExpenseForm({ userId, participants, group, percentage, i
             <Text>Go Back</Text>
           ) : (
             <Text>
-              paid by {payerId == "1" ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
+              paid by {payerId == userId ? "you" : participants.find(user => user.id === payerId)?.username} and split {splitMethod}
             </Text>
           )}
         </TouchableOpacity>
