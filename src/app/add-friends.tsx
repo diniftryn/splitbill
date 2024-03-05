@@ -73,8 +73,8 @@ export default function AddFriendsScreen() {
             contacts
               .sort((a, b) => a.username.localeCompare(b.username))
               .map(contact => (
-                <View className="border-b border-b-gray-200">
-                  <TouchableOpacity key={contact.id} onPress={() => handleAddFriend(contact.phone as string)} className="py-2">
+                <View className="border-b border-b-gray-200" key={contact.id}>
+                  <TouchableOpacity onPress={() => handleAddFriend(contact.phone as string)} className="py-2">
                     <Text className="text-base">{contact.username}</Text>
                     <Text className="text-sm text-gray-400">{contact.phone}</Text>
                   </TouchableOpacity>
@@ -82,9 +82,9 @@ export default function AddFriendsScreen() {
               ))}
         </View>
 
-        <TouchableOpacity className="flex flex-row justify-center gap-x-2 py-2 bg-white mt-5">
+        {/* <TouchableOpacity className="flex flex-row justify-center gap-x-2 py-2 bg-white mt-5">
           <Text className="text-base">can't find your friends? send an invite</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
     </SafeAreaView>
   );

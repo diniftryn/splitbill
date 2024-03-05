@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Keyboard, Alert, FlatList, GestureResponderEvent, Button, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, Keyboard, Alert, FlatList, GestureResponderEvent, Button, Pressable, TouchableWithoutFeedback } from "react-native";
 import { Link, Stack, router } from "expo-router";
 import { Ionicons, Foundation } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
@@ -35,14 +35,14 @@ export default function AddGroupsScreen() {
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
-      const { data, error, status } = await supabase.from("users").select().eq("authId", session?.user.id).single();
+      const { data, error, status } = await supabase.from("users").select().eq("id", session?.user.id).single();
       if (error && status !== 406) {
         throw error;
       }
 
       if (data) {
         setSelectedUserIds([...selectedUserIds, data.id]);
-        const { data: friends, error } = await supabase.from("users").select().in("email", data.friendsEmail);
+        const { data: friends, error } = await supabase.from("users").select().in("phone", data.friends_phone);
 
         if (error) throw error;
         if (friends) {
@@ -72,12 +72,12 @@ export default function AddGroupsScreen() {
   const handleSubmit = async (event: GestureResponderEvent) => {
     event.preventDefault();
 
-    const submitData = { name: groupName, imageUrl, userIds: selectedUserIds, expenseIds: [] };
+    const submitData = { name: groupName, imageUrl, userIds: selectedUserIds, expenseIds: [], type: "group" };
     console.log(submitData);
 
     const { data: dataCreateGroup, error: errorCreateGroup } = await supabase.from("groups").insert(submitData).select();
     if (errorCreateGroup) {
-      console.log("Unable to add. Error: " + errorCreateGroup);
+      console.log("Unable to add. Error: " + errorCreateGroup.message);
       return Alert.alert("Could not create group");
     }
     if (!errorCreateGroup) {
@@ -101,44 +101,46 @@ export default function AddGroupsScreen() {
   };
 
   return (
-    <View className="flex-1 items-center pt-20">
-      <Stack.Screen
-        options={{
-          title: "new group",
-          headerStyle: { backgroundColor: "#EDF76A" },
-          headerRight: () => (
-            <TouchableOpacity>
-              <Ionicons name="add" size={30} color="black" />
-            </TouchableOpacity>
-          )
-        }}
-      />
-
-      <Button title="Submit" onPress={handleSubmit} />
-
-      <TouchableOpacity className="items-center px-5 py-3 border border-dashed border-black bg-pink-50" onPress={Keyboard.dismiss}>
-        <Foundation name="camera" size={40} color="black" />
-        <Text className="text-sm w-20 text-center">add group photo</Text>
-      </TouchableOpacity>
-
-      <View className="pt-10 min-w-[50vw]">
-        <PaperTextInput label="Group Name" value={groupName} onChangeText={text => setGroupName(text)} />
-        <PaperTextInput label="Image URL" value={imageUrl} onChangeText={text => setImageUrl(text)} />
-
-        <FlatList
-          className="pt-5"
-          data={availableUsers}
-          keyExtractor={item => item.id as string}
-          renderItem={({ item }) => (
-            <View className="flex flex-row items-center">
-              <View className="border rounded-full">
-                <Checkbox status={selectedUserIds.includes(item.id as string) ? "checked" : "unchecked"} onPress={() => toggleCheckbox(item.id as string)} />
-              </View>
-              <Text className="text-lg pl-2">{item.username}</Text>
-            </View>
-          )}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View className="flex-1 items-center pt-20">
+        <Stack.Screen
+          options={{
+            title: "new group",
+            headerStyle: { backgroundColor: "#EDF76A" },
+            headerRight: () => (
+              <TouchableOpacity>
+                <Ionicons name="add" size={30} color="black" />
+              </TouchableOpacity>
+            )
+          }}
         />
+
+        <Button title="Submit" onPress={handleSubmit} />
+
+        <TouchableOpacity className="items-center px-5 py-3 border border-dashed border-black bg-pink-50" onPress={Keyboard.dismiss}>
+          <Foundation name="camera" size={40} color="black" />
+          <Text className="text-sm w-20 text-center">add group photo</Text>
+        </TouchableOpacity>
+
+        <View className="pt-10 min-w-[50vw]">
+          <PaperTextInput label="Group Name" value={groupName} onChangeText={text => setGroupName(text)} />
+          <PaperTextInput label="Image URL" value={imageUrl} onChangeText={text => setImageUrl(text)} />
+
+          <FlatList
+            className="pt-5"
+            data={availableUsers}
+            keyExtractor={item => item.id as string}
+            renderItem={({ item }) => (
+              <View className="flex flex-row items-center">
+                <View className="border rounded-full">
+                  <Checkbox status={selectedUserIds.includes(item.id as string) ? "checked" : "unchecked"} onPress={() => toggleCheckbox(item.id as string)} />
+                </View>
+                <Text className="text-lg pl-2">{item.username}</Text>
+              </View>
+            )}
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
