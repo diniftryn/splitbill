@@ -41,7 +41,6 @@ export default function AddGroupsScreen() {
       }
 
       if (data) {
-        setSelectedUserIds([...selectedUserIds, data.id]);
         const { data: friends, error } = await supabase.from("users").select().in("phone", data.friends_phone);
 
         if (error) throw error;
@@ -72,7 +71,8 @@ export default function AddGroupsScreen() {
   const handleSubmit = async (event: GestureResponderEvent) => {
     event.preventDefault();
 
-    const submitData = { name: groupName, imageUrl, userIds: selectedUserIds, expenseIds: [], type: "group" };
+    const groupUserIds = [...selectedUserIds, session?.user.id];
+    const submitData = { name: groupName, imageUrl, userIds: groupUserIds, expenseIds: [], type: "group" };
     console.log(submitData);
 
     const { data: dataCreateGroup, error: errorCreateGroup } = await supabase.from("groups").insert(submitData).select();
@@ -81,7 +81,7 @@ export default function AddGroupsScreen() {
       return Alert.alert("Could not create group");
     }
     if (!errorCreateGroup) {
-      selectedUserIds.map(async userId => {
+      groupUserIds.map(async userId => {
         const user = users.find(user => user.id === userId);
         const groupIdsToUpdate = user?.groupIds ? [...user.groupIds, dataCreateGroup[0].id] : [dataCreateGroup[0].id];
         console.log("userId: " + userId + " groupIdsToUpdate: " + groupIdsToUpdate);

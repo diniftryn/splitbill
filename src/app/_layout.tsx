@@ -10,6 +10,7 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import AuthProvider from "../providers/AuthProvider";
 import QueryProvider from "../providers/QueryProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,13 +53,15 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <AuthProvider>
           <QueryProvider>
-            <Stack>
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
-              <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
-              <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
-            </Stack>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Stack>
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
+                <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
+                <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
+              </Stack>
+            </GestureHandlerRootView>
           </QueryProvider>
         </AuthProvider>
       </ThemeProvider>
