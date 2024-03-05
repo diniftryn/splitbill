@@ -1,10 +1,14 @@
-import { StyleSheet, Text, Pressable, View, Image, Alert, TouchableOpacity, Animated } from "react-native";
-import { Link } from "expo-router";
+import { StyleSheet, Text, Pressable, View, Image, Alert, TouchableOpacity, Animated, ActivityIndicator } from "react-native";
+import { Link, useRouter } from "expo-router";
 import { imageMap } from "@/assets/images";
 import { Swipeable } from "react-native-gesture-handler";
 import { supabase } from "../lib/supabase";
+import { useDeleteGroup, useGroupList } from "../api/groups";
 
 export default function groupsListItem({ group }: any) {
+  const router = useRouter();
+  const { mutate: deleteGroup } = useDeleteGroup();
+
   const imagePath = imageMap[group.imageUrl];
 
   const renderRightActions = (dragX: any) => {
@@ -14,21 +18,11 @@ export default function groupsListItem({ group }: any) {
     });
 
     const handleDelete = async (group: Group) => {
-      const { data: deleteGroup, error: errorGroup } = await supabase.from("groups").delete().eq("id", group.id);
-      const { data: expenses, error: errorExpenses } = await supabase.from("expenses").delete().in("id", group.expenseIds);
-
-      group.userIds.map(async userId => {
-        const { data: user, error: errorUser } = await supabase.from("users").select().eq("id", userId).single();
-        const groupIdsToUpdate = user.groupIds.filter((id: string) => {
-          return id !== group.id;
-        });
-
-        const { data: updateGroup, error: errorUpdateGroup } = await supabase.from("users").update({ groupIds: groupIdsToUpdate }).eq("id", userId).select();
-        console.log("userId: " + userId + " groupIdsToUpdate: " + groupIdsToUpdate);
+      deleteGroup(group, {
+        onSuccess: () => {
+          router.replace("/(tabs)/groups");
+        }
       });
-
-      console.log(deleteGroup);
-      if (!errorGroup && !errorExpenses) Alert.alert("delete button pressed! " + group.id);
     };
 
     return (
