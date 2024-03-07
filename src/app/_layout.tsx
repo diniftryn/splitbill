@@ -4,13 +4,15 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 import { SplashScreen, Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { TamaguiProvider } from "tamagui";
-
 import { config } from "../../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import client from "@/src/lib/apollo";
+import { ApolloProvider } from "@apollo/client";
 import AuthProvider from "../providers/AuthProvider";
 import QueryProvider from "../providers/QueryProvider";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,17 +54,19 @@ function RootLayoutNav() {
     <TamaguiProvider config={config} defaultTheme={colorScheme as any}>
       <ThemeProvider value={DefaultTheme}>
         <AuthProvider>
-          <QueryProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack>
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
-                <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
-                <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
-              </Stack>
-            </GestureHandlerRootView>
-          </QueryProvider>
+          <ApolloProvider client={client}>
+            <QueryProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack>
+                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="add-expense" options={{ presentation: "modal", headerShown: false }} />
+                  <Stack.Screen name="add-friends" options={{ presentation: "modal" }} />
+                  <Stack.Screen name="add-groups" options={{ presentation: "modal" }} />
+                </Stack>
+              </GestureHandlerRootView>
+            </QueryProvider>
+          </ApolloProvider>
         </AuthProvider>
       </ThemeProvider>
     </TamaguiProvider>

@@ -1,4 +1,5 @@
 import { supabase } from "@/src/lib/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Session } from "@supabase/supabase-js";
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 
@@ -27,6 +28,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       } = await supabase.auth.getSession();
 
       setSession(session);
+      // await AsyncStorage.setItem("authToken", session?.access_token as string);
 
       if (session) {
         const { data } = await supabase.from("users").select().eq("id", session.user.id).single();
