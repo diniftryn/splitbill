@@ -71,7 +71,7 @@ export default function AddGroupsScreen() {
   const handleSubmit = async (event: GestureResponderEvent) => {
     event.preventDefault();
 
-    if (!groupName || !selectedUserIds) Alert.alert("Incomplete", "Please ensure that there is a group name and group members selected");
+    if (!groupName || !selectedUserIds || selectedUserIds.length == 0) Alert.alert("Incomplete", "Please ensure that there is a group name and group members selected");
     else {
       const groupUserIds = [...selectedUserIds, session?.user.id];
       const submitData = { name: groupName, imageUrl, userIds: groupUserIds, expenseIds: [], type: "group" };
