@@ -40,7 +40,7 @@ export default function AddGroupsScreen() {
         throw error;
       }
 
-      if (data) {
+      if (data && data.friends_phone) {
         const { data: friends, error } = await supabase.from("users").select().in("phone", data.friends_phone);
 
         if (error) throw error;
@@ -71,32 +71,35 @@ export default function AddGroupsScreen() {
   const handleSubmit = async (event: GestureResponderEvent) => {
     event.preventDefault();
 
-    const groupUserIds = [...selectedUserIds, session?.user.id];
-    const submitData = { name: groupName, imageUrl, userIds: groupUserIds, expenseIds: [], type: "group" };
-    console.log(submitData);
+    if (!groupName || !selectedUserIds) Alert.alert("Incomplete", "Please ensure that there is a group name and group members selected");
+    else {
+      const groupUserIds = [...selectedUserIds, session?.user.id];
+      const submitData = { name: groupName, imageUrl, userIds: groupUserIds, expenseIds: [], type: "group" };
+      console.log(submitData);
 
-    const { data: dataCreateGroup, error: errorCreateGroup } = await supabase.from("groups").insert(submitData).select();
-    if (errorCreateGroup) {
-      console.log("Unable to add. Error: " + errorCreateGroup.message);
-      return Alert.alert("Could not create group");
-    }
-    if (!errorCreateGroup) {
-      groupUserIds.map(async userId => {
-        const user = users.find(user => user.id === userId);
-        const groupIdsToUpdate = user?.groupIds ? [...user.groupIds, dataCreateGroup[0].id] : [dataCreateGroup[0].id];
-        console.log("userId: " + userId + " groupIdsToUpdate: " + groupIdsToUpdate);
-        const { data: dataUpdateUserGroup, error: errorUpdateUserGroup } = await supabase.from("users").update({ groupIds: groupIdsToUpdate }).eq("id", userId).select();
+      const { data: dataCreateGroup, error: errorCreateGroup } = await supabase.from("groups").insert(submitData).select();
+      if (errorCreateGroup) {
+        console.log("Unable to add. Error: " + errorCreateGroup.message);
+        return Alert.alert("Could not create group");
+      }
+      if (!errorCreateGroup) {
+        groupUserIds.map(async userId => {
+          const user = users.find(user => user.id === userId);
+          const groupIdsToUpdate = user?.groupIds ? [...user.groupIds, dataCreateGroup[0].id] : [dataCreateGroup[0].id];
+          console.log("userId: " + userId + " groupIdsToUpdate: " + groupIdsToUpdate);
+          const { data: dataUpdateUserGroup, error: errorUpdateUserGroup } = await supabase.from("users").update({ groupIds: groupIdsToUpdate }).eq("id", userId).select();
 
-        if (errorUpdateUserGroup) {
-          console.log("Unable to update group users. Error: " + JSON.stringify(errorUpdateUserGroup));
-          return Alert.alert("Could not update group users");
-        }
-        if (!errorUpdateUserGroup) {
-          console.log("dataUpdateUserGroup " + JSON.stringify(dataUpdateUserGroup));
-        }
-      });
-      Alert.alert("Group was successfully added!");
-      router.replace("/(tabs)/groups");
+          if (errorUpdateUserGroup) {
+            console.log("Unable to update group users. Error: " + JSON.stringify(errorUpdateUserGroup));
+            return Alert.alert("Could not update group users");
+          }
+          if (!errorUpdateUserGroup) {
+            console.log("dataUpdateUserGroup " + JSON.stringify(dataUpdateUserGroup));
+          }
+        });
+        Alert.alert("Group was successfully added!");
+        router.replace("/(tabs)/groups");
+      }
     }
   };
 
