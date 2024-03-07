@@ -24,7 +24,7 @@ export default function Groups({ groups }: { groups: Group[] }) {
           )
         }}
       />
-      {groups.length == 0 ? (
+      {groups && groups.length == 0 ? (
         <View className="min-h-full flex justify-center">
           <Text className="text-center text-base">No groups added yet.</Text>
         </View>

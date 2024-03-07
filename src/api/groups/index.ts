@@ -6,6 +6,7 @@ export const useGroupList = () => {
   const { user } = useAuth();
 
   if (!user) throw new Error("No user data.");
+  if (!user.groupIds) return [];
 
   return useQuery({
     queryKey: ["groups"],

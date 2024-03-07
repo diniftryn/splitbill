@@ -17,10 +17,10 @@ export default function SignUpScreen() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      phone,
       options: {
         data: {
-          username
+          username,
+          phone
         }
       }
     });

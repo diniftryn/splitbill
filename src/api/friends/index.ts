@@ -5,6 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 export const useFriendList = () => {
   const { user } = useAuth();
 
+  if (!user?.friends_phone) return [];
+
   return useQuery({
     queryKey: ["friends"],
     queryFn: async () => {
