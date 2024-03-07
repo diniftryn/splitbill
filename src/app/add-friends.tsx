@@ -74,7 +74,7 @@ export default function AddFriendsScreen() {
       <ScrollView>
         <View className="px-3">
           <Text className="py-2">From your contacts who are already on the app</Text>
-          {contacts &&
+          {contacts && contacts.length > 0 ? (
             contacts
               .sort((a, b) => a.username.localeCompare(b.username))
               .map(contact => (
@@ -84,7 +84,10 @@ export default function AddFriendsScreen() {
                     <Text className="text-sm text-gray-400">{contact.phone}</Text>
                   </TouchableOpacity>
                 </View>
-              ))}
+              ))
+          ) : (
+            <Text>No friends are on the app yet</Text>
+          )}
         </View>
 
         {/* <TouchableOpacity className="flex flex-row justify-center gap-x-2 py-2 bg-white mt-5">
