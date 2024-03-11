@@ -1,7 +1,17 @@
-import { StyleSheet, Text, Pressable, View, Image } from "react-native";
+import { StyleSheet, Text, Pressable, View, Image, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
+import UserBalances from "./UserBalances";
+import { useFriendGroup } from "../api/friends";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function friendListItem({ friend }: any) {
+  const { user } = useAuth();
+
+  if (!user) throw new Error("no user");
+  const { data: friendGroup, error: friendGroupError, isLoading: friendGroupIsLoading } = useFriendGroup(user.id, friend.id);
+  if (friendGroupIsLoading) return <ActivityIndicator />;
+  if (friendGroupError) return <Text>Failed to fetch friend group</Text>;
+
   return (
     <Link href={`/(tabs)/friends/${friend.username}?friendId=${friend.id}`} asChild>
       <Pressable style={styles.friendContainer}>
@@ -10,10 +20,11 @@ export default function friendListItem({ friend }: any) {
           <Text style={styles.friendName}>{friend.username}</Text>
         </View>
 
-        <View style={styles.friendSubtitle}>
+        {/* <View style={styles.friendSubtitle}>
           <Text style={styles.subValue}>settled</Text>
           <Text style={styles.subValue}>$0</Text>
-        </View>
+        </View> */}
+        {friendGroup && <UserBalances id={user.id as string} groupId={friendGroup[0].id} />}
       </Pressable>
     </Link>
   );
