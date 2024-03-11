@@ -25,7 +25,7 @@ export default function UserBalances({ id, groupId }: { id: string; groupId: str
               <Text key={userId} style={styles.subValue}>
                 {/* {balance.users && balance.users.find(user => user.id === userId).username} */}
                 you
-                {balance.owedAmounts[userId] < 0 ? ` is owed $${balance.owedAmounts[userId] * -1}` : ` owe $${balance.owedAmounts[userId]}`}
+                {balance.owedAmounts[userId] < 0 ? ` are owed $${balance.owedAmounts[userId] * -1}` : ` owe $${balance.owedAmounts[userId]}`}
               </Text>
             );
           }
