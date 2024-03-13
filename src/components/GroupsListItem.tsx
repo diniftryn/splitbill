@@ -4,8 +4,11 @@ import { imageMap } from "@/assets/images";
 import { Swipeable } from "react-native-gesture-handler";
 import { supabase } from "../lib/supabase";
 import { useDeleteGroup, useGroupList } from "../api/groups";
+import UserBalances from "./UserBalances";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function groupsListItem({ group }: any) {
+  const { user } = useAuth();
   const router = useRouter();
   const { mutate: deleteGroup } = useDeleteGroup();
 
@@ -60,10 +63,7 @@ export default function groupsListItem({ group }: any) {
               <Text style={styles.groupName}>{group.name}</Text>
             </View>
 
-            <View style={styles.groupSubtitle}>
-              <Text style={styles.subValue}>owed</Text>
-              <Text style={styles.subValue}>$0</Text>
-            </View>
+            {user && group && <UserBalances id={user.id as string} groupId={group.id} />}
           </Pressable>
         </Link>
       </Swipeable>
