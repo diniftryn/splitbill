@@ -22,11 +22,15 @@ export default function UserBalances({ id, groupId }: { id: string; groupId: str
         balance.group[0].userIds.map((userId: any) => {
           if (userId === id) {
             return (
-              <Text key={userId} style={styles.subValue}>
-                {/* {balance.users && balance.users.find(user => user.id === userId).username} */}
-                you
-                {balance.owedAmounts[userId] < 0 ? ` are owed $${balance.owedAmounts[userId] * -1}` : ` owe $${balance.owedAmounts[userId]}`}
-              </Text>
+              <>
+                <Text key={userId} style={styles.subValue}>
+                  {/* {balance.users && balance.users.find(user => user.id === userId).username} */}
+                  {balance.owedAmounts[userId] < 0 ? "you are owed" : "you owe"}
+                </Text>
+                <Text key={userId} style={styles.subValue}>
+                  {balance.owedAmounts[userId] < 0 ? `$${balance.owedAmounts[userId] * -1}` : `$${balance.owedAmounts[userId]}`}
+                </Text>
+              </>
             );
           }
         })
